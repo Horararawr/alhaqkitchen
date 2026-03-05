@@ -15,7 +15,7 @@ class DBHelper {
           'CREATE TABLE pelanggan (id INTEGER PRIMARY KEY AUTOINCREMENT, nama TEXT, email TEXT, noHp TEXT, alamat TEXT, menuOrder TEXT)',
         );
       },
-      version: 2,
+      version: 1,
     );
   }
 
@@ -24,19 +24,47 @@ class DBHelper {
     await dbs.insert('user', user.toMap());
   }
 
-  static Future<UserModel?> loginUser({
-    required String email,
-    required String password,
-  }) async {
+  static Future<UserModel?> loginUser({required String email, required String password}) async {
     final dbs = await db();
     final List<Map<String, dynamic>> result = await dbs.query(
       "user",
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
-    if (result.isNotEmpty) {
-      return UserModel.fromMap(result.first);
-    }
-    return null;
+    return result.isNotEmpty ? UserModel.fromMap(result.first) : null;
+  }
+
+  static Future<Map<String, dynamic>?> getProfile() async {
+    final dbs = await db();
+    final List<Map<String, dynamic>> results = await dbs.query('pelanggan', limit: 1);
+    return results.isNotEmpty ? results.first : null;
+  }
+
+  static Future<void> updateProfile(int id, String nama, String noHp, String alamat) async {
+    final dbs = await db();
+    await dbs.update(
+      'pelanggan',
+      {'nama': nama, 'noHp': noHp, 'alamat': alamat},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<void> addOrder(String nama, String menu) async {
+    final dbs = await db();
+    await dbs.insert('pelanggan', {
+      'nama': nama,
+      'menuOrder': menu,
+    });
+  }
+
+  static Future<List<Map<String, dynamic>>> getOrders() async {
+    final dbs = await db();
+    return await dbs.query('pelanggan', where: 'menuOrder IS NOT NULL');
+  }
+
+  static Future<void> deleteOrder(int id) async {
+    final dbs = await db();
+    await dbs.delete('pelanggan', where: 'id = ?', whereArgs: [id]);
   }
 }
