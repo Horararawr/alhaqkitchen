@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'lunchbox.dart';
 import 'snackbox.dart';
+import 'requestorder.dart'; // Import file baru
 
 class MenuHaq extends StatelessWidget {
   const MenuHaq({super.key});
@@ -15,11 +16,7 @@ class MenuHaq extends StatelessWidget {
         centerTitle: true,
         title: const Text(
           "Menu",
-          style: TextStyle(
-            fontFamily: 'BacasimeAntique', 
-            color: Color(0xFFBC9C22), 
-            fontSize: 30,
-          ),
+          style: TextStyle(fontFamily: 'BacasimeAntique', color: Color(0xFFBC9C22), fontSize: 30),
         ),
         iconTheme: const IconThemeData(color: Color(0xFFBC9C22)),
       ),
@@ -33,21 +30,24 @@ class MenuHaq extends StatelessWidget {
 
               _labelMenu("Lunch Box"),
               const SizedBox(height: 10),
-              _menuImageBox(
-                context, 
-                'assets/images/colorful-meal-prep-containers-filled-with-variety-healthy-foods-dark-surface_335952-2335.jpg', 
-                () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox()))
-              ),
+              _menuImageBox(context, 'assets/images/colorful-meal-prep-containers-filled-with-variety-healthy-foods-dark-surface_335952-2335.jpg', 
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox()))),
 
               const SizedBox(height: 25),
 
               _labelMenu("Snack Box"),
               const SizedBox(height: 10),
-              _menuImageBox(
-                context, 
-                'assets/images/Screenshot 2026-03-11 101144.jpg',
-                () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox()))
-              ),
+              _menuImageBox(context, 'assets/images/Screenshot 2026-03-11 101144.jpg', 
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox()))),
+
+              const SizedBox(height: 25),
+
+              // --- INI MENU REQUEST ORDER BARU ---
+              _labelMenu("Request Order"),
+              const SizedBox(height: 10),
+              _menuImageBox(context, 'assets/images/db2be0683f97128e0d0b88fc5f30bfb4.jpg', // Ganti pake asset yg cocok
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RequestOrder()))),
+              
               const SizedBox(height: 40),
             ],
           ),
@@ -57,26 +57,18 @@ class MenuHaq extends StatelessWidget {
   }
 
   Widget _labelMenu(String title) {
-    return Text(
-      title, 
-      style: const TextStyle(fontFamily: 'BonheurRoyale', color: Color(0xFFBC9C22), fontSize: 40)
-    );
+    return Text(title, style: const TextStyle(fontFamily: 'BonheurRoyale', color: Color(0xFFBC9C22), fontSize: 40));
   }
 
   Widget _menuImageBox(BuildContext context, String imagePath, VoidCallback tap) {
     return InkWell(
       onTap: tap,
       child: Container(
-        width: double.infinity, 
-        height: 250,
+        width: double.infinity, height: 250,
         decoration: BoxDecoration(
           border: Border.all(color: const Color(0xFFBC9C22), width: 1.5),
           borderRadius: BorderRadius.circular(15),
-          image: DecorationImage(
-            image: AssetImage(imagePath),
-            fit: BoxFit.cover,
-            onError: (exception, stackTrace) => {}, 
-          ),
+          image: DecorationImage(image: AssetImage(imagePath), fit: BoxFit.cover),
         ),
       ),
     );
