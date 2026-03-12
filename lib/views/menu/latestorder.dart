@@ -29,7 +29,7 @@ class _LatestOrderState extends State<LatestOrder> {
           style: TextStyle(
             fontFamily: 'BacasimeAntique',
             color: Color(0xFFBC9C22),
-            fontSize: 24,
+            fontSize: 30,
           ),
         ),
         centerTitle: true,
@@ -37,16 +37,16 @@ class _LatestOrderState extends State<LatestOrder> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(10),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40), // Jarak kanan kiri garis
+            padding: const EdgeInsets.symmetric(horizontal: 20), // Jarak kanan kiri garis
             child: Container(
-              height: 2.5, // Ketebalan garis
+              height: 1.5, // Ketebalan garis
               decoration: BoxDecoration(
                 color: const Color(0xFFBC9C22),
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFBC9C22).withOpacity(0.5),
-                    blurRadius: 5,
+                    color: const Color(0xFFBC9C22).withOpacity(0.1),
+                    blurRadius: 1,
                     offset: const Offset(0, 2),
                   ),
                 ],

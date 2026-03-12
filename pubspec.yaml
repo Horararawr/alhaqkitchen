@@ -28,9 +28,11 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  animate_do: ^4.2.0
   flutter:
     sdk: flutter
   shared_preferences: ^2.5.4
+  lottie: ^3.3.2
   sqflite: ^2.4.2
   path_provider: ^2.1.5
   image_picker: ^1.0.7
@@ -50,6 +52,9 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/images/Al-Haq Connect.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
+
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/Al-Haq Connect.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

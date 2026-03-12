@@ -64,42 +64,53 @@ class _CartHaqState extends State<CartHaq> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 5),
-                            // TAMPILAN MENU (Statis, gak bakal keganti)
+                            // TAMPILAN MENU (Statis: Harga & Isi Menu)
                             Text(
                               "Rp ${item.price} - ${item.desc}", 
-                              style: const TextStyle(color: Colors.white70)
+                              style: const TextStyle(color: Colors.white70, fontSize: 13)
                             ),
-                            const SizedBox(height: 5),
-                            // TAMPILAN NOTES (Alamat/Jadwal)
-                            Text(
-                              item.notes.isEmpty 
-                                  ? "Klik edit untuk tambah alamat/jadwal" 
-                                  : "📍 ${item.notes}",
-                              style: TextStyle(
-                                color: item.notes.isEmpty ? Colors.white38 : const Color(0xFFBC9C22),
-                                fontSize: 12,
-                                fontStyle: item.notes.isEmpty ? FontStyle.italic : FontStyle.normal
+                            const SizedBox(height: 8),
+                            // TAMPILAN INFO PENGIRIMAN & NOTES (Dinamis: Bisa diedit)
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.black12,
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(Icons.location_on, size: 14, color: Color(0xFFBC9C22)),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(
+                                      item.notes.isEmpty 
+                                          ? "Tambah Alamat, Jam Kirim, atau Catatan (Gak pake mayo, dll)" 
+                                          : item.notes,
+                                      style: TextStyle(
+                                        color: item.notes.isEmpty ? Colors.white38 : Colors.white,
+                                        fontSize: 12,
+                                        fontStyle: item.notes.isEmpty ? FontStyle.italic : FontStyle.normal
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit_note, color: Colors.white), 
-                                  onPressed: () => _editDeliveryDetails(index)
-                                ),  
-                                IconButton(
-                                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent), 
-                                  onPressed: () {
-                                    setState(() => globalCart.removeAt(index));
-                                  }
-                                ),
-                              ],
+                            IconButton(
+                              icon: const Icon(Icons.edit_note, color: Colors.white), 
+                              onPressed: () => _editDeliveryDetails(index)
+                            ),  
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline, color: Colors.redAccent), 
+                              onPressed: () {
+                                setState(() => globalCart.removeAt(index));
+                              }
                             ),
                           ],
                         ),
@@ -151,9 +162,9 @@ class _CartHaqState extends State<CartHaq> {
     );
   }
 
-  // FUNGSI EDIT KHUSUS ALAMAT & JADWAL
+  // FUNGSI EDIT ALAMAT, WAKTU & CATATAN (Gak pake mayo, dll)
   void _editDeliveryDetails(int index) {
-    // Ambil data dari notes, bukan desc
+    // Controller mengambil data dari notes (bukan desc menu)
     TextEditingController notesC = TextEditingController(text: globalCart[index].notes);
     
     showDialog(
@@ -162,20 +173,35 @@ class _CartHaqState extends State<CartHaq> {
         backgroundColor: const Color(0xFF00357A),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         title: const Text(
-          "Detail Pengiriman", 
-          style: TextStyle(color: Color(0xFFBC9C22))
+          "Detail Pengiriman & Catatan", 
+          style: TextStyle(color: Color(0xFFBC9C22), fontWeight: FontWeight.bold)
         ),
-        content: TextField(
-          controller: notesC, 
-          maxLines: 3,
-          style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
-            hintText: "Contoh: Jl. Merdeka No. 10, Jam 1 Siang",
-            hintStyle: TextStyle(color: Colors.white38),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFBC9C22))
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Pesanan: ${globalCart[index].name}", style: const TextStyle(color: Colors.white60, fontSize: 13)),
+            const SizedBox(height: 15),
+            TextField(
+              controller: notesC, 
+              maxLines: 4,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: "Masukkan Alamat, Jam Pengiriman, dan Catatan (Contoh: Jl. Merdeka No 10, Jam 12 Siang, Gak pake mayo ya...)",
+                hintStyle: const TextStyle(color: Colors.white38, fontSize: 12),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.05),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Color(0xFFBC9C22)),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Color(0xFFBC9C22), width: 2),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+              ),
             ),
-          ),
+          ],
         ),
         actions: [
           TextButton(
@@ -183,10 +209,13 @@ class _CartHaqState extends State<CartHaq> {
             child: const Text("Batal", style: TextStyle(color: Colors.white70))
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBC9C22)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFBC9C22),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+            ),
             onPressed: () {
               setState(() {
-                // Simpan ke variabel notes, biar menu aman
+                // UPDATE DISINI: Masuk ke field notes agar deskripsi menu aman
                 globalCart[index].notes = notesC.text;
               });
               Navigator.pop(context);

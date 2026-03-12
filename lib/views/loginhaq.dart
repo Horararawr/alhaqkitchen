@@ -1,6 +1,6 @@
 import 'package:alhaqkitchen/database/sqflite.dart';
 import 'package:alhaqkitchen/views/siginhaq.dart';
-import 'package:alhaqkitchen/views/homehaq.dart'; // Pastiin path ini bener
+import 'package:alhaqkitchen/views/homehaq.dart'; 
 import 'package:flutter/material.dart';
 
 class LoginHaq extends StatefulWidget {
@@ -15,6 +15,7 @@ class _LoginHaqState extends State<LoginHaq> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   bool _isObscure = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,43 +29,31 @@ class _LoginHaqState extends State<LoginHaq> {
               key: _formKey,
               child: Column(
                 children: [
-                  const Text("Al-Haq\nConnect", textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: 'BacasimeAntique', color: Color(0xFFBC9C22), fontSize: 45)),
-                  const SizedBox(height: 50),
-                  _buildInput("Email Address", Icons.email_outlined, _emailController),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _passController, obscureText: _isObscure,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Password", hintStyle: const TextStyle(color: Colors.white60),
-                      prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFFBC9C22)),
-                      suffixIcon: IconButton(icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFBC9C22)), 
-                      onPressed: () => setState(() => _isObscure = !_isObscure)),
-                      enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(12)),
-                      focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22), width: 2), borderRadius: BorderRadius.circular(12)),
-                    ),
+                  const Text(
+                    "Al-Haq\nConnect", 
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'BacasimeAntique', 
+                      color: Color(0xFFBC9C22), 
+                      fontSize: 45
+                    )
                   ),
+                  const SizedBox(height: 50),
+                  _buildInput("Email Address", Icons.email_outlined, _emailController, false),
+                  const SizedBox(height: 20),
+                  _buildInput("Password", Icons.lock_outline, _passController, true),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity, height: 55,
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBC9C22), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          var user = await DBHelper.loginUser(email: _emailController.text, password: _passController.text);
-                          if (user != null) {
-                            if (!mounted) return;
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeHaq(
-                              email: user.email, 
-                              name: user.name ?? "User Al-Haq" // FIX: Pakai .name
-                            )));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Email/PW Salah!")));
-                          }
-                        }
-                      },
-                      child: const Text("Log In", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFBC9C22), 
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
+                      ),
+                      onPressed: _isLoading ? null : _handleLogin,
+                      child: _isLoading 
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Log In", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -81,14 +70,63 @@ class _LoginHaqState extends State<LoginHaq> {
     );
   }
 
-  Widget _buildInput(String hint, IconData icon, TextEditingController controller) {
+  // Fungsi login dipisah biar rapi dan gak ada dead code
+  Future<void> _handleLogin() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+      
+      try {
+        final user = await DBHelper.loginUser(
+          email: _emailController.text, 
+          password: _passController.text
+        );
+
+        if (user != null) {
+          if (!mounted) return;
+          // Langsung pindah ke Home
+          Navigator.pushReplacement(
+            context, 
+            MaterialPageRoute(builder: (context) => HomeHaq(
+              email: user.email, 
+              name: user.name ?? "User Al-Haq"
+            ))
+          );
+        } else {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Email atau Password Salah!"))
+          );
+        }
+      } catch (e) {
+        print("Login Error: $e");
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Widget _buildInput(String hint, IconData icon, TextEditingController controller, bool isPass) {
     return TextFormField(
-      controller: controller, style: const TextStyle(color: Colors.white),
+      controller: controller,
+      obscureText: isPass ? _isObscure : false,
+      style: const TextStyle(color: Colors.white),
+      validator: (v) => v == null || v.isEmpty ? "Wajib diisi" : null,
       decoration: InputDecoration(
-        hintText: hint, hintStyle: const TextStyle(color: Colors.white60),
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.white60),
         prefixIcon: Icon(icon, color: const Color(0xFFBC9C22)),
-        enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(12)),
-        focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22), width: 2), borderRadius: BorderRadius.circular(12)),
+        suffixIcon: isPass ? IconButton(
+          icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFBC9C22)),
+          onPressed: () => setState(() => _isObscure = !_isObscure),
+        ) : null,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFBC9C22)), 
+          borderRadius: BorderRadius.circular(12)
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFBC9C22), width: 2), 
+          borderRadius: BorderRadius.circular(12)
+        ),
       ),
     );
   }

@@ -16,6 +16,7 @@ class _SettingsHaqState extends State<SettingsHaq> {
   late TextEditingController _nameController;
   File? _image;
   final ImagePicker _picker = ImagePicker();
+  bool _isLoading = false; // Biar lo tau proses lagi jalan
 
   @override
   void initState() {
@@ -27,7 +28,10 @@ class _SettingsHaqState extends State<SettingsHaq> {
   Future<void> _loadPhoto() async {
     final data = await DBHelper.getProfile(widget.email);
     if (data != null && data['foto'] != null && data['foto'].isNotEmpty) {
-      if (File(data['foto']).existsSync()) setState(() => _image = File(data['foto']));
+      final file = File(data['foto']);
+      if (file.existsSync()) {
+        setState(() => _image = file);
+      }
     }
   }
 
@@ -40,7 +44,12 @@ class _SettingsHaqState extends State<SettingsHaq> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
-      appBar: AppBar(title: const Text("Edit Profile", style: TextStyle(color: Colors.white)), backgroundColor: Colors.transparent, elevation: 0, iconTheme: const IconThemeData(color: Colors.white)),
+      appBar: AppBar(
+        title: const Text("Edit Profile", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white)
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -51,7 +60,8 @@ class _SettingsHaqState extends State<SettingsHaq> {
                 alignment: Alignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 60, backgroundColor: Colors.grey[400],
+                    radius: 60,
+                    backgroundColor: Colors.grey[400],
                     backgroundImage: _image != null ? FileImage(_image!) : null,
                     child: _image == null ? const Icon(Icons.camera_alt, size: 40, color: Colors.white) : null,
                   ),
@@ -66,22 +76,58 @@ class _SettingsHaqState extends State<SettingsHaq> {
                 ],
               ),
             ),
-            if (_image != null) TextButton.icon(onPressed: () => setState(() => _image = null), icon: const Icon(Icons.delete, color: Colors.redAccent), label: const Text("Remove Photo", style: TextStyle(color: Colors.redAccent))),
             const SizedBox(height: 30),
             TextField(
-              controller: _nameController, style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(labelText: "Full Name", labelStyle: const TextStyle(color: Color(0xFFBC9C22)), enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.white54), borderRadius: BorderRadius.circular(10)), focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(10))),
+              controller: _nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: "Full Name",
+                labelStyle: const TextStyle(color: Color(0xFFBC9C22)),
+                enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.white54), borderRadius: BorderRadius.circular(10)),
+                focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(10))
+              ),
             ),
             const SizedBox(height: 40),
             SizedBox(
               width: double.infinity, height: 50,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBC9C22), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                onPressed: () async {
-                  await DBHelper.saveProfile(widget.email, _nameController.text, _image?.path ?? "", "");
-                  if (mounted) Navigator.pop(context, true);
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFBC9C22),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                ),
+                onPressed: _isLoading ? null : () async {
+                  setState(() => _isLoading = true);
+                  
+                  try {
+                    // Update Database
+                    await DBHelper.saveProfile(
+                      widget.email, 
+                      _nameController.text.trim(), 
+                      _image?.path ?? "", 
+                      "", // noHp
+                      ""  // alamat
+                    );
+
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Changes Saved!"))
+                      );
+                      // Navigator.pop ngirim 'true' biar ProfileHaq refresh
+                      Navigator.pop(context, true);
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Error: $e"))
+                      );
+                    }
+                  } finally {
+                    if (mounted) setState(() => _isLoading = false);
+                  }
                 },
-                child: const Text("SAVE CHANGES", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                child: _isLoading 
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text("SAVE CHANGES", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
           ],
