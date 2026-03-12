@@ -34,6 +34,37 @@ class _RequestOrderState extends State<RequestOrder> {
     }
   }
 
+  // --- FUNGSI BARU: ALERT KONFIRMASI HAPUS ---
+  void _confirmDelete(int id) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF00357A),
+        shape: RoundedRectangleBorder(
+            side: const BorderSide(color: Color(0xFFBC9C22)),
+            borderRadius: BorderRadius.circular(15)),
+        title: const Text("Hapus Request?", 
+            style: TextStyle(color: Color(0xFFBC9C22), fontFamily: 'BacasimeAntique')),
+        content: const Text("Yakin mau hapus ini? Data yang dihapus nggak bisa balik lagi loh.", 
+            style: TextStyle(color: Colors.white70)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("BATAL", style: TextStyle(color: Colors.white70)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: () {
+              _deleteRequest(id);
+              Navigator.pop(context); // Tutup Dialog
+            },
+            child: const Text("HAPUS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
   // CREATE & UPDATE: Tampilkan Dialog
   void _showForm(int? id, String? currentText) {
     if (id != null) {
@@ -56,7 +87,7 @@ class _RequestOrderState extends State<RequestOrder> {
         content: TextField(
           controller: _controller,
           maxLines: 4,
-          autofocus: true, // Biar langsung ngetik
+          autofocus: true, 
           style: const TextStyle(color: Colors.white),
           decoration: const InputDecoration(
             hintText: "Contoh: saya mau ayam kentucky 20pcs untuk jam 4 sore..",
@@ -83,15 +114,13 @@ class _RequestOrderState extends State<RequestOrder> {
               if (input.isNotEmpty) {
                 try {
                   if (id == null) {
-                    // Simpan Data Baru
                     await DBHelper.insert('request_orders', {'content': input});
                   } else {
-                    // Update Data Lama
                     await DBHelper.update('request_orders', id, {'content': input});
                   }
                   _controller.clear();
-                  Navigator.pop(context); // Tutup Dialog
-                  _refreshData(); // Refresh list di halaman utama
+                  Navigator.pop(context); 
+                  _refreshData(); 
                 } catch (e) {
                   print("Gagal Simpan ke DB: $e");
                 }
@@ -148,31 +177,47 @@ class _RequestOrderState extends State<RequestOrder> {
           : _requests.isEmpty
               ? const Center(
                   child: Text("Belum ada request...",
-                      style: TextStyle(color: Colors.white54)))
+                      style: TextStyle(color: Colors.white54, fontSize: 16)))
               : ListView.builder(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
                   itemCount: _requests.length,
                   itemBuilder: (context, index) {
                     final item = _requests[index];
-                    return Card(
-                      color: Colors.white.withOpacity(0.05),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: const BorderSide(
-                              color: Color(0xFFBC9C22), width: 0.5)),
+                    return Container(
                       margin: const EdgeInsets.only(bottom: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: const Color(0xFFBC9C22), width: 0.8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
                       child: ListTile(
-                        title: Text(item['content'] ?? '',
-                            style: const TextStyle(color: Colors.white, fontSize: 16)),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        title: Text(
+                          item['content'] ?? '',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            height: 1.4,
+                          ),
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blueAccent),
-                                onPressed: () => _showForm(item['id'], item['content'])),
+                              icon: const Icon(Icons.edit_note_rounded, color: Colors.blueAccent, size: 28),
+                              onPressed: () => _showForm(item['id'], item['content']),
+                            ),
                             IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.redAccent),
-                                onPressed: () => _deleteRequest(item['id'])),
+                              icon: const Icon(Icons.delete_sweep_rounded, color: Colors.redAccent, size: 28),
+                              onPressed: () => _confirmDelete(item['id']), // Panggil Alert Dialog
+                            ),
                           ],
                         ),
                       ),

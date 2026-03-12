@@ -64,13 +64,11 @@ class _CartHaqState extends State<CartHaq> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 5),
-                            // TAMPILAN MENU (Statis: Harga & Isi Menu)
                             Text(
                               "Rp ${item.price} - ${item.desc}", 
                               style: const TextStyle(color: Colors.white70, fontSize: 13)
                             ),
                             const SizedBox(height: 8),
-                            // TAMPILAN INFO PENGIRIMAN & NOTES (Dinamis: Bisa diedit)
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -85,7 +83,7 @@ class _CartHaqState extends State<CartHaq> {
                                   Expanded(
                                     child: Text(
                                       item.notes.isEmpty 
-                                          ? "Tambah Alamat, Jam Kirim, atau Catatan (Gak pake mayo, dll)" 
+                                          ? "Tambah Alamat, Jam Kirim, atau Catatan" 
                                           : item.notes,
                                       style: TextStyle(
                                         color: item.notes.isEmpty ? Colors.white38 : Colors.white,
@@ -108,9 +106,7 @@ class _CartHaqState extends State<CartHaq> {
                             ),  
                             IconButton(
                               icon: const Icon(Icons.delete_outline, color: Colors.redAccent), 
-                              onPressed: () {
-                                setState(() => globalCart.removeAt(index));
-                              }
+                              onPressed: () => _confirmDelete(index) // <--- Panggil fungsi alert
                             ),
                           ],
                         ),
@@ -120,7 +116,6 @@ class _CartHaqState extends State<CartHaq> {
                 ),
           ),
           
-          // TOMBOL SELESAI / CHECKOUT
           if (globalCart.isNotEmpty) 
             Padding(
               padding: const EdgeInsets.only(top: 10),
@@ -162,9 +157,49 @@ class _CartHaqState extends State<CartHaq> {
     );
   }
 
-  // FUNGSI EDIT ALAMAT, WAKTU & CATATAN (Gak pake mayo, dll)
+  // --- FUNGSI BARU: ALERT KONFIRMASI HAPUS ---
+  void _confirmDelete(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF00357A),
+        shape: RoundedRectangleBorder(
+            side: const BorderSide(color: Color(0xFFBC9C22)),
+            borderRadius: BorderRadius.circular(15)),
+        title: const Text(
+          "Hapus Pesanan?", 
+          style: TextStyle(color: Color(0xFFBC9C22), fontWeight: FontWeight.bold, fontFamily: 'BacasimeAntique')
+        ),
+        content: Text(
+          "Yakin mau hapus '${globalCart[index].name}' dari keranjang?", 
+          style: const TextStyle(color: Colors.white70)
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), 
+            child: const Text("Batal", style: TextStyle(color: Colors.white70))
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+            ),
+            onPressed: () {
+              setState(() => globalCart.removeAt(index));
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Pesanan dihapus"), duration: Duration(seconds: 1))
+              );
+            }, 
+            child: const Text("Hapus", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+          )
+        ],
+      ),
+    );
+  }
+
+  // FUNGSI EDIT ALAMAT, WAKTU & CATATAN
   void _editDeliveryDetails(int index) {
-    // Controller mengambil data dari notes (bukan desc menu)
     TextEditingController notesC = TextEditingController(text: globalCart[index].notes);
     
     showDialog(
@@ -187,7 +222,7 @@ class _CartHaqState extends State<CartHaq> {
               maxLines: 4,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: "Masukkan Alamat, Jam Pengiriman, dan Catatan (Contoh: Jl. Merdeka No 10, Jam 12 Siang, Gak pake mayo ya...)",
+                hintText: "Masukkan Alamat, Jam Pengiriman, dan Catatan...",
                 hintStyle: const TextStyle(color: Colors.white38, fontSize: 12),
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.05),
@@ -215,7 +250,6 @@ class _CartHaqState extends State<CartHaq> {
             ),
             onPressed: () {
               setState(() {
-                // UPDATE DISINI: Masuk ke field notes agar deskripsi menu aman
                 globalCart[index].notes = notesC.text;
               });
               Navigator.pop(context);

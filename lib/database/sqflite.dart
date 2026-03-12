@@ -15,9 +15,8 @@ class DBHelper {
     final dbPath = await getDatabasesPath();
     return openDatabase(
       join(dbPath, 'alhaq_final_fix.db'),
-      version: 1,
+      version: 2, // GUE NAIKIN KE VERSION 2 BIAR TABEL BARU KE-CREATE
       onCreate: (db, version) async {
-        // Tabel Auth
         await db.execute('''
           CREATE TABLE user (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -27,7 +26,6 @@ class DBHelper {
           )
         ''');
         
-        // Tabel Profile
         await db.execute('''
           CREATE TABLE pelanggan (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -39,7 +37,6 @@ class DBHelper {
           )
         ''');
 
-        // Tabel Cart
         await db.execute('''
           CREATE TABLE cart (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -53,7 +50,7 @@ class DBHelper {
           )
         ''');
 
-        // --- TAMBAHAN TABEL REQUEST ORDER ---
+        // TABEL REQUEST ORDER
         await db.execute('''
           CREATE TABLE request_orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -61,10 +58,53 @@ class DBHelper {
           )
         ''');
       },
+      // INI KUNCINYA: Biar tabel request_orders kebuat meski app udah terinstall
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS request_orders (
+              id INTEGER PRIMARY KEY AUTOINCREMENT, 
+              content TEXT
+            )
+          ''');
+        }
+      },
     );
   }
 
-  // --- FUNGSI AUTH & PROFILE ---
+  // --- FUNGSI CRUD REQUEST ORDER (Pakai Try-Catch biar aman) ---
+  
+  static Future<int> insert(String table, Map<String, dynamic> data) async {
+    try {
+      final db = await DBHelper.database;
+      return await db.insert(table, data);
+    } catch (e) {
+      print("DB Error Insert: $e");
+      return -1;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getData(String table) async {
+    try {
+      final db = await DBHelper.database;
+      return await db.query(table, orderBy: 'id DESC');
+    } catch (e) {
+      print("DB Error GetData: $e");
+      return [];
+    }
+  }
+
+  static Future<int> update(String table, int id, Map<String, dynamic> data) async {
+    final db = await DBHelper.database;
+    return await db.update(table, data, where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<int> delete(String table, int id) async {
+    final db = await DBHelper.database;
+    return await db.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+  // --- FUNGSI AUTH & PROFILE (Tetep sama) ---
   static Future<bool> registerUser(UserModel user) async {
     final db = await DBHelper.database;
     try { 
@@ -108,7 +148,6 @@ class DBHelper {
     );
   }
 
-  // --- FUNGSI CART ---
   static Future<void> insertCartItem(Map<String, dynamic> item) async {
     final db = await DBHelper.database;
     await db.insert('cart', item, conflictAlgorithm: ConflictAlgorithm.replace);
@@ -117,27 +156,5 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getCartItems() async {
     final db = await DBHelper.database;
     return await db.query('cart', orderBy: 'id DESC');
-  }
-
-  // --- FUNGSI GENERIC CRUD (Bisa dipake Request Order & Fitur lain) ---
-  
-  static Future<int> insert(String table, Map<String, dynamic> data) async {
-    final db = await DBHelper.database;
-    return await db.insert(table, data);
-  }
-
-  static Future<List<Map<String, dynamic>>> getData(String table) async {
-    final db = await DBHelper.database;
-    return await db.query(table, orderBy: 'id DESC');
-  }
-
-  static Future<int> update(String table, int id, Map<String, dynamic> data) async {
-    final db = await DBHelper.database;
-    return await db.update(table, data, where: 'id = ?', whereArgs: [id]);
-  }
-
-  static Future<int> delete(String table, int id) async {
-    final db = await DBHelper.database;
-    return await db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 }
