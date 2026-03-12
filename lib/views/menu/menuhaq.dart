@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'lunchbox.dart';
+import 'snackbox.dart';
 
 class MenuHaq extends StatelessWidget {
   const MenuHaq({super.key});
@@ -8,29 +9,75 @@ class MenuHaq extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, iconTheme: const IconThemeData(color: Color(0xFFBC9C22))),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "Menu",
+          style: TextStyle(
+            fontFamily: 'BacasimeAntique', 
+            color: Color(0xFFBC9C22), 
+            fontSize: 30,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Color(0xFFBC9C22)),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Text("Menu", style: TextStyle(fontFamily: 'BacasimeAntique', color: Color(0xFFBC9C22), fontSize: 35)),
-            const SizedBox(height: 30),
-            _menuOption(context, "Lunch Box", () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox()))),
-            const SizedBox(height: 20),
-            _menuOption(context, "Snack Box", () {}),
-          ],
+        padding: const EdgeInsets.symmetric(horizontal: 20), 
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Divider(color: Color(0xFFBC9C22), thickness: 1),
+              const SizedBox(height: 25),
+
+              _labelMenu("Lunch Box"),
+              const SizedBox(height: 10),
+              _menuImageBox(
+                context, 
+                'assets/images/colorful-meal-prep-containers-filled-with-variety-healthy-foods-dark-surface_335952-2335.jpg', 
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox()))
+              ),
+
+              const SizedBox(height: 25),
+
+              _labelMenu("Snack Box"),
+              const SizedBox(height: 10),
+              _menuImageBox(
+                context, 
+                'assets/images/Screenshot 2026-03-11 101144.jpg',
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox()))
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _menuOption(BuildContext context, String title, VoidCallback tap) {
+  Widget _labelMenu(String title) {
+    return Text(
+      title, 
+      style: const TextStyle(fontFamily: 'BonheurRoyale', color: Color(0xFFBC9C22), fontSize: 40)
+    );
+  }
+
+  Widget _menuImageBox(BuildContext context, String imagePath, VoidCallback tap) {
     return InkWell(
       onTap: tap,
       child: Container(
-        width: double.infinity, height: 100,
-        decoration: BoxDecoration(border: Border.all(color: const Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(15)),
-        child: Center(child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 20))),
+        width: double.infinity, 
+        height: 250,
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFFBC9C22), width: 1.5),
+          borderRadius: BorderRadius.circular(15),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+            onError: (exception, stackTrace) => {}, 
+          ),
+        ),
       ),
     );
   }

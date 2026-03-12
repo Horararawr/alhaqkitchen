@@ -1,56 +1,64 @@
-import 'package:flutter/material.dart';
-import 'package:alhaqkitchen/database/app_data.dart';
 import 'package:alhaqkitchen/views/order/success_order.dart';
+import 'package:flutter/material.dart';
+import 'package:alhaqkitchen/database/sqflite.dart';
+import 'package:alhaqkitchen/database/app_data.dart';
 
-class LunchBox1 extends StatefulWidget {
-  final String menuName;
-  const LunchBox1({super.key, required this.menuName});
-
-  @override
-  State<LunchBox1> createState() => _LunchBox1State();
-}
-
-class _LunchBox1State extends State<LunchBox1> {
-  int basePrice = 35000;
-  int qty = 1;
-  TextEditingController descC = TextEditingController(text: "No spicy please");
+class LunchBox1 extends StatelessWidget {
+  const LunchBox1({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
-      appBar: AppBar(backgroundColor: Colors.transparent, iconTheme: const IconThemeData(color: Color(0xFFBC9C22))),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Text("Detail Menu", style: TextStyle(color: Color(0xFFBC9C22), fontSize: 24)),
-            const SizedBox(height: 20),
-            Text(widget.menuName, style: const TextStyle(color: Colors.white, fontSize: 20)),
-            const SizedBox(height: 10),
-            Text("Rp ${basePrice * qty}", style: const TextStyle(color: Color(0xFFBC9C22), fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(onPressed: () => setState(() => qty > 1 ? qty-- : null), icon: const Icon(Icons.remove_circle, color: Colors.red)),
-                Text("$qty", style: const TextStyle(color: Colors.white, fontSize: 20)),
-                IconButton(onPressed: () => setState(() => qty++), icon: const Icon(Icons.add_circle, color: Colors.green)),
-              ],
-            ),
-            TextField(controller: descC, style: const TextStyle(color: Colors.white), decoration: const InputDecoration(labelText: "Description", labelStyle: TextStyle(color: Colors.white70))),
-            const SizedBox(height: 40),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green, minimumSize: const Size(double.infinity, 50)),
-              onPressed: () {
-                globalCart.add(CartItem(name: widget.menuName, price: basePrice * qty, desc: descC.text));
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));
-              },
-              child: const Text("ORDER NOW"),
-            )
-          ],
-        ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent, 
+        elevation: 0, 
+        iconTheme: const IconThemeData(color: Color(0xFFBC9C22))
+      ),
+      body: Column(
+        children: [
+          Image.asset('assets/images/0d6cff0b95363e280d1538b4f4437501.jpg', 
+              height: 300, fit: BoxFit.cover, width: double.infinity),
+          const SizedBox(height: 20),
+          const Text("Lunch Box #1", 
+              style: TextStyle(color: Color(0xFFBC9C22), fontSize: 35, fontFamily: 'BonheurRoyale')),
+          const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text("Ayam Teriyaki, Nasi Putih, & Salad Mayo", 
+                style: TextStyle(color: Colors.white, fontSize: 18), textAlign: TextAlign.center),
+          ),
+          const Spacer(),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFBC9C22), 
+                minimumSize: const Size(200, 50), 
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            onPressed: () => _order(context, "Lunch Box #1", 25000, 
+                "Ayam Teriyaki, Nasi Putih, & Salad Mayo", 
+                'assets/images/0d6cff0b95363e280d1538b4f4437501.jpg'),
+            child: const Text("Tambah ke Cart", 
+                style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'BacasimeAntique')),
+          ),
+          const SizedBox(height: 50),
+        ],
       ),
     );
+  }
+
+  void _order(BuildContext context, String name, int price, String desc, String img) async {
+    // Pastiin di sqflite.dart namanya insertCartItem!
+    await DBHelper.insertCartItem({
+      'name': name, 
+      'price': price, 
+      'image': img, 
+      'quantity': 1, 
+      'status': 'cart', 
+      'order_date': DateTime.now().toString()
+    });
+    
+    globalCart.add(CartItem(name: name, price: price, desc: desc, image: img, qty: 1));
+    
+    if (!context.mounted) return;
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));
   }
 }

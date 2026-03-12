@@ -1,6 +1,7 @@
+import 'package:alhaqkitchen/database/sqflite.dart';
 import 'package:alhaqkitchen/views/siginhaq.dart';
+import 'package:alhaqkitchen/views/homehaq.dart'; // Pastiin path ini bener
 import 'package:flutter/material.dart';
-import 'homehaq.dart';
 
 class LoginHaq extends StatefulWidget {
   const LoginHaq({super.key});
@@ -11,117 +12,84 @@ class LoginHaq extends StatefulWidget {
 
 class _LoginHaqState extends State<LoginHaq> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passController = TextEditingController();
   bool _isObscure = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 80),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const Text("Al-Haq\nConnect", textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'BacasimeAntique', color: Color(0xFFBC9C22), fontSize: 45, height: 1.1)),
-              const SizedBox(height: 60),
-
-              _buildInput("Email Address", (v) => v!.isEmpty ? "Wajib diisi, coy!" : null),
-              const SizedBox(height: 20),
-
-              TextFormField(
-                obscureText: _isObscure,
-                style: const TextStyle(color: Colors.white),
-                validator: (v) => v!.isEmpty ? "Password jangan kosong dong!" : null,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  hintStyle: const TextStyle(color: Colors.white60),
-                  enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(10)),
-                  focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(10)),
-                  errorStyle: const TextStyle(color: Colors.redAccent),
-                  suffixIcon: IconButton(
-                    icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFBC9C22)),
-                    onPressed: () => setState(() => _isObscure = !_isObscure),
-                  ),
-                ),
-              ),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text("forgot password?", 
-                    style: TextStyle(color: Colors.white70, fontSize: 12, fontStyle: FontStyle.italic)),
-                ),
-              ),
-              
-              const SizedBox(height: 20),
-              _mainButton("Login", () {
-                if (_formKey.currentState!.validate()) {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeHaq()));
-                }
-              }),
-              
-              const SizedBox(height: 20),
-              const Text("or", style: TextStyle(color: Color(0xFFBC9C22))),
-              const SizedBox(height: 20),
-              _socialBtn("Google", Icons.g_mobiledata),
-              _socialBtn("Facebook", Icons.facebook),
-
-              const SizedBox(height: 30),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Form(
+              key: _formKey,
+              child: Column(
                 children: [
-                  const Text("Don't have an account? ", style: TextStyle(color: Colors.white)),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterHaq()));
-                    },
-                    child: const Text("Sign up", 
-                      style: TextStyle(color: Color(0xFFBC9C22), fontWeight: FontWeight.bold)),
+                  const Text("Al-Haq\nConnect", textAlign: TextAlign.center,
+                      style: TextStyle(fontFamily: 'BacasimeAntique', color: Color(0xFFBC9C22), fontSize: 45)),
+                  const SizedBox(height: 50),
+                  _buildInput("Email Address", Icons.email_outlined, _emailController),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _passController, obscureText: _isObscure,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: "Password", hintStyle: const TextStyle(color: Colors.white60),
+                      prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFFBC9C22)),
+                      suffixIcon: IconButton(icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFBC9C22)), 
+                      onPressed: () => setState(() => _isObscure = !_isObscure)),
+                      enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22), width: 2), borderRadius: BorderRadius.circular(12)),
+                    ),
                   ),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity, height: 55,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBC9C22), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          var user = await DBHelper.loginUser(email: _emailController.text, password: _passController.text);
+                          if (user != null) {
+                            if (!mounted) return;
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeHaq(
+                              email: user.email, 
+                              name: user.name ?? "User Al-Haq" // FIX: Pakai .name
+                            )));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Email/PW Salah!")));
+                          }
+                        }
+                      },
+                      child: const Text("Log In", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterHaq())),
+                    child: const Text("Belum punya akun? Sign Up", style: TextStyle(color: Color(0xFFBC9C22))),
+                  )
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildInput(String hint, String? Function(String?)? validator) {
+  Widget _buildInput(String hint, IconData icon, TextEditingController controller) {
     return TextFormField(
-      style: const TextStyle(color: Colors.white),
-      validator: validator,
+      controller: controller, style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white60),
-        enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(10)),
-        focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(10)),
-        errorStyle: const TextStyle(color: Colors.redAccent),
+        hintText: hint, hintStyle: const TextStyle(color: Colors.white60),
+        prefixIcon: Icon(icon, color: const Color(0xFFBC9C22)),
+        enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFFBC9C22), width: 2), borderRadius: BorderRadius.circular(12)),
       ),
     );
-  }
-
-  Widget _mainButton(String label, VoidCallback tap) {
-    return SizedBox(width: double.infinity, height: 50,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBC9C22), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-        onPressed: tap, child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold))));
-  }
-
-  Widget _socialBtn(String label, IconData icon) {
-    return Container(margin: const EdgeInsets.only(bottom: 10), height: 50,
-      decoration: BoxDecoration(border: Border.all(color: const Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(10)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: Colors.white),
-          const SizedBox(width: 10),
-          Text(label, style: const TextStyle(color: Colors.white)),
-        ],
-      ));
   }
 }
