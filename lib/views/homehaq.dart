@@ -69,7 +69,7 @@ class MainDashboard extends StatelessWidget {
             const SizedBox(height: 10),
             _menuBox(
               context, 
-              'assets/images/0d6cff0b95363e280d1538b4f4437501.jpg', 
+              'assets/images/71PW-0pDwxL._AC_UF894,1000_QL80_.jpg', 
               () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MenuHaq()))
             ),
 
@@ -79,7 +79,7 @@ class MainDashboard extends StatelessWidget {
             const SizedBox(height: 10),
             _menuBox(
               context, 
-              'assets/images/db2be0683f97128e0d0b88fc5f30bfb4.jpg', 
+              'assets/images/latestor.jpg', 
               () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LatestOrder()))
             ),
           ],

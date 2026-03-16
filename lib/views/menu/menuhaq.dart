@@ -37,7 +37,7 @@ class MenuHaq extends StatelessWidget {
 
               _labelMenu("Snack Box"),
               const SizedBox(height: 10),
-              _menuImageBox(context, 'assets/images/Screenshot 2026-03-11 101144.jpg', 
+              _menuImageBox(context, 'assets/images/4-dessert-box-manis-yang-cocok-dinikmat-54b6f4.jpg', 
                 () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox()))),
 
               const SizedBox(height: 25),
@@ -45,7 +45,7 @@ class MenuHaq extends StatelessWidget {
               // --- INI MENU REQUEST ORDER BARU ---
               _labelMenu("Request Order"),
               const SizedBox(height: 10),
-              _menuImageBox(context, 'assets/images/db2be0683f97128e0d0b88fc5f30bfb4.jpg', // Ganti pake asset yg cocok
+              _menuImageBox(context, 'assets/images/Food_FP_B117_1004178733.jpg', // Ganti pake asset yg cocok
                 () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RequestOrder()))),
               
               const SizedBox(height: 40),

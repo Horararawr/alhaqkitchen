@@ -17,9 +17,9 @@ class _LunchBox3State extends State<LunchBox3> {
   @override
   Widget build(BuildContext context) {
     const String menuName = "Lunch Box #3";
-    const int menuPrice = 30000;
+    const int menuPrice = 25000;
     const String menuDesc = "Ayam Briyani, Nasi Brasmati, & Kentang";
-    const String menuImg = 'assets/images/0d6cff0b95363e280d1538b4f4437501.jpg';
+    const String menuImg = 'assets/images/plate-biryani-with-bunch-food-it.jpg';
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),

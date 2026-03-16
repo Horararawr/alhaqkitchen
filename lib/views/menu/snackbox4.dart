@@ -17,9 +17,9 @@ class _SnackBox4State extends State<SnackBox4> {
   @override
   Widget build(BuildContext context) {
     const String menuName = "Snack Box #4";
-    const int menuPrice = 17000;
+    const int menuPrice = 12000;
     const String menuDesc = "Pastel, Kue Lapis, & Pie Susu";
-    const String menuImg = 'assets/images/db2be0683f97128e0d0b88fc5f30bfb4.jpg';
+    const String menuImg = 'assets/images/tips-membuat-pastel-renyah-dan-m-20231124031803-2291788294.webp';
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
