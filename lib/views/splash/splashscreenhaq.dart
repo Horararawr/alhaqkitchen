@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'loginhaq.dart';
+import '../login/loginhaq.dart';
 
 class SplashHaq extends StatefulWidget {
   const SplashHaq({super.key});

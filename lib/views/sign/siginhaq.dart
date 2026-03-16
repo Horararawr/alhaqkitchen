@@ -1,6 +1,6 @@
 import 'package:alhaqkitchen/database/sqflite.dart';
 import 'package:alhaqkitchen/models/user_model.dart';
-import 'package:alhaqkitchen/views/homehaq.dart'; // Pastiin path ini bener
+import 'package:alhaqkitchen/views/home/homehaq.dart'; // Pastiin path ini bener
 import 'package:flutter/material.dart';
 
 class RegisterHaq extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/views/loginhaq.dart';
+import 'package:alhaqkitchen/views/login/loginhaq.dart';
 import 'package:alhaqkitchen/views/profile/settingshaq.dart';
 
 class ProfileHaq extends StatefulWidget {

@@ -1,25 +1,25 @@
 import 'package:alhaqkitchen/views/order/success_order.dart';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/database/app_data.dart';
+import 'package:alhaqkitchen/models/cart_model.dart';
 
-class SnackBox3 extends StatefulWidget {
-  const SnackBox3({super.key});
+class LunchBox4 extends StatefulWidget {
+  const LunchBox4({super.key});
 
   @override
-  State<SnackBox3> createState() => _SnackBox3State();
+  State<LunchBox4> createState() => _LunchBox4State();
 }
 
-class _SnackBox3State extends State<SnackBox3> {
+class _LunchBox4State extends State<LunchBox4> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const String menuName = "Snack Box #3";
-    const int menuPrice = 15000;
-    const String menuDesc = "Samosa Beef, Onde-onde & Ketan Abon";
-    const String menuImg = 'assets/images/delicious-pakistani-food-with-tomato-sauce.jpg';
+    const String menuName = "Lunch Box #4";
+    const int menuPrice = 20000;
+    const String menuDesc = "Beef Rendang, Nasi Putih, & Telor Bulet";
+    const String menuImg = 'assets/images/Beef-Rendang-Indonesian-Curry-sw.jpg';
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
@@ -54,7 +54,10 @@ class _SnackBox3State extends State<SnackBox3> {
                       Row(
                         children: [
                           _buildQtyBtn(Icons.remove, () { if (_quantity > 1) setState(() => _quantity--); }),
-                          Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text("$_quantity", style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text("$_quantity", style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                          ),
                           _buildQtyBtn(Icons.add, () => setState(() => _quantity++)),
                         ],
                       ),
@@ -64,7 +67,7 @@ class _SnackBox3State extends State<SnackBox3> {
                       TextField(
                         controller: _noteController, maxLines: 3, style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: "Contoh: Alamat pengiriman, Jam kirim, atau Request khusus...",
+                          hintText: "Contoh: Alamat pengiriman, Jam kirim...",
                           hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
                           filled: true, fillColor: Colors.white.withOpacity(0.1),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -103,7 +106,14 @@ class _SnackBox3State extends State<SnackBox3> {
   }
 
   Widget _buildQtyBtn(IconData icon, VoidCallback onTap) {
-    return GestureDetector(onTap: onTap, child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(border: Border.all(color: const Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(8)), child: Icon(icon, color: const Color(0xFFBC9C22), size: 20)));
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(border: Border.all(color: const Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(8)),
+        child: Icon(icon, color: const Color(0xFFBC9C22), size: 20),
+      ),
+    );
   }
 
   void _order(BuildContext context, String name, int price, String desc, String img) async {

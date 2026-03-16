@@ -1,24 +1,25 @@
 import 'package:alhaqkitchen/views/order/success_order.dart';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/database/app_data.dart';
+import 'package:alhaqkitchen/models/cart_model.dart';
 
-class SnackBox1 extends StatefulWidget {
-  const SnackBox1({super.key});
+class SnackBox2 extends StatefulWidget {
+  const SnackBox2({super.key});
+
   @override
-  State<SnackBox1> createState() => _SnackBox1State();
+  State<SnackBox2> createState() => _SnackBox2State();
 }
 
-class _SnackBox1State extends State<SnackBox1> {
+class _SnackBox2State extends State<SnackBox2> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const String menuName = "Snack Box #1";
-    const int menuPrice = 14000;
-    const String menuDesc = "Risol Mayo, Cupcake, & Jasuke";
-    const String menuImg = 'assets/images/top-view-chicken-nuggets-with-sauce.jpg'; // Sesuaikan asset lo
+    const String menuName = "Snack Box #2";
+    const int menuPrice = 13000;
+    const String menuDesc = "Buras, Sosis Solo, & Kue Sus";
+    const String menuImg = 'assets/images/unnamed.jpg';
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
@@ -58,12 +59,12 @@ class _SnackBox1State extends State<SnackBox1> {
                         ],
                       ),
                       const SizedBox(height: 30),
-                      const Text("Catatan Tambahan (Alamat/Jam/Request)", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                      const Text("Catatan Tambahan (Opsional)", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 10),
                       TextField(
                         controller: _noteController, maxLines: 3, style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: "Contoh: Jl. Melati No. 5, Jam 10 pagi, Jasuke dipisah keju...",
+                          hintText: "Contoh: Jl. Melati No 5, Jam 10 pagi, Gak pake pedas...",
                           hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
                           filled: true, fillColor: Colors.white.withOpacity(0.1),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),

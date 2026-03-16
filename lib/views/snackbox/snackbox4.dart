@@ -1,25 +1,25 @@
 import 'package:alhaqkitchen/views/order/success_order.dart';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/database/app_data.dart';
+import 'package:alhaqkitchen/models/cart_model.dart';
 
-class SnackBox2 extends StatefulWidget {
-  const SnackBox2({super.key});
+class SnackBox4 extends StatefulWidget {
+  const SnackBox4({super.key});
 
   @override
-  State<SnackBox2> createState() => _SnackBox2State();
+  State<SnackBox4> createState() => _SnackBox4State();
 }
 
-class _SnackBox2State extends State<SnackBox2> {
+class _SnackBox4State extends State<SnackBox4> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const String menuName = "Snack Box #2";
-    const int menuPrice = 13000;
-    const String menuDesc = "Buras, Sosis Solo, & Kue Sus";
-    const String menuImg = 'assets/images/unnamed.jpg';
+    const String menuName = "Snack Box #4";
+    const int menuPrice = 12000;
+    const String menuDesc = "Pastel, Kue Lapis, & Pie Susu";
+    const String menuImg = 'assets/images/tips-membuat-pastel-renyah-dan-m-20231124031803-2291788294.webp';
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
@@ -64,7 +64,7 @@ class _SnackBox2State extends State<SnackBox2> {
                       TextField(
                         controller: _noteController, maxLines: 3, style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: "Contoh: Jl. Melati No 5, Jam 10 pagi, Gak pake pedas...",
+                          hintText: "Contoh: Alamat pengiriman, Jam kirim...",
                           hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
                           filled: true, fillColor: Colors.white.withOpacity(0.1),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),

@@ -1,6 +1,6 @@
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/views/siginhaq.dart';
-import 'package:alhaqkitchen/views/homehaq.dart'; 
+import 'package:alhaqkitchen/views/sign/siginhaq.dart';
+import 'package:alhaqkitchen/views/home/homehaq.dart'; 
 import 'package:flutter/material.dart';
 
 class LoginHaq extends StatefulWidget {

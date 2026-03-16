@@ -1,5 +1,5 @@
 import 'package:alhaqkitchen/database/preference.dart';
-import 'package:alhaqkitchen/views/loginhaq.dart';
+import 'package:alhaqkitchen/views/login/loginhaq.dart';
 import 'package:alhaqkitchen/extension/navigatorhaq.dart';
 import 'package:flutter/material.dart';
 

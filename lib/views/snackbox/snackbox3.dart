@@ -1,25 +1,25 @@
 import 'package:alhaqkitchen/views/order/success_order.dart';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/database/app_data.dart';
+import 'package:alhaqkitchen/models/cart_model.dart';
 
-class SnackBox4 extends StatefulWidget {
-  const SnackBox4({super.key});
+class SnackBox3 extends StatefulWidget {
+  const SnackBox3({super.key});
 
   @override
-  State<SnackBox4> createState() => _SnackBox4State();
+  State<SnackBox3> createState() => _SnackBox3State();
 }
 
-class _SnackBox4State extends State<SnackBox4> {
+class _SnackBox3State extends State<SnackBox3> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const String menuName = "Snack Box #4";
-    const int menuPrice = 12000;
-    const String menuDesc = "Pastel, Kue Lapis, & Pie Susu";
-    const String menuImg = 'assets/images/tips-membuat-pastel-renyah-dan-m-20231124031803-2291788294.webp';
+    const String menuName = "Snack Box #3";
+    const int menuPrice = 15000;
+    const String menuDesc = "Samosa Beef, Onde-onde & Ketan Abon";
+    const String menuImg = 'assets/images/delicious-pakistani-food-with-tomato-sauce.jpg';
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
@@ -64,7 +64,7 @@ class _SnackBox4State extends State<SnackBox4> {
                       TextField(
                         controller: _noteController, maxLines: 3, style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: "Contoh: Alamat pengiriman, Jam kirim...",
+                          hintText: "Contoh: Alamat pengiriman, Jam kirim, atau Request khusus...",
                           hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
                           filled: true, fillColor: Colors.white.withOpacity(0.1),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),

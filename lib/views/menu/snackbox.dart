@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'snackbox1.dart'; 
-import 'snackbox2.dart';
-import 'snackbox3.dart';
-import 'snackbox4.dart';
+import '../snackbox/snackbox1.dart'; 
+import '../snackbox/snackbox2.dart';
+import '../snackbox/snackbox3.dart';
+import '../snackbox/snackbox4.dart';
 
 class SnackBox extends StatelessWidget {
   const SnackBox({super.key});

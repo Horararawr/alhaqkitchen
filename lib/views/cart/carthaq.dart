@@ -1,4 +1,4 @@
-import 'package:alhaqkitchen/database/app_data.dart';
+import 'package:alhaqkitchen/models/cart_model.dart';
 import 'package:flutter/material.dart';
 
 class CartHaq extends StatefulWidget {

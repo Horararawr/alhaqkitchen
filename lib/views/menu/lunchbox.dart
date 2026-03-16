@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'lunchbox1.dart'; 
-import 'lunchbox2.dart';
-import 'lunchbox3.dart';
-import 'lunchbox4.dart';
+import '../lunchbox/lunchbox1.dart'; 
+import '../lunchbox/lunchbox2.dart';
+import '../lunchbox/lunchbox3.dart';
+import '../lunchbox/lunchbox4.dart';
 
 class LunchBox extends StatelessWidget {
   const LunchBox({super.key});

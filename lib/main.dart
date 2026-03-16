@@ -1,5 +1,5 @@
-import 'package:alhaqkitchen/views/homehaq.dart'; 
-import 'package:alhaqkitchen/views/splashscreenhaq.dart';
+import 'package:alhaqkitchen/views/home/homehaq.dart'; 
+import 'package:alhaqkitchen/views/splash/splashscreenhaq.dart';
 import 'package:flutter/material.dart';
 
 void main() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'lunchbox.dart';
-import 'snackbox.dart';
-import 'requestorder.dart'; // Import file baru
+import '../menu/lunchbox.dart';
+import '../menu/snackbox.dart';
+import '../menu/requestorder.dart'; // Import file baru
 
 class MenuHaq extends StatelessWidget {
   const MenuHaq({super.key});

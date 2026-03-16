@@ -1,25 +1,24 @@
 import 'package:alhaqkitchen/views/order/success_order.dart';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/database/app_data.dart';
+import 'package:alhaqkitchen/models/cart_model.dart';
 
-class LunchBox3 extends StatefulWidget {
-  const LunchBox3({super.key});
-
+class SnackBox1 extends StatefulWidget {
+  const SnackBox1({super.key});
   @override
-  State<LunchBox3> createState() => _LunchBox3State();
+  State<SnackBox1> createState() => _SnackBox1State();
 }
 
-class _LunchBox3State extends State<LunchBox3> {
+class _SnackBox1State extends State<SnackBox1> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const String menuName = "Lunch Box #3";
-    const int menuPrice = 25000;
-    const String menuDesc = "Ayam Briyani, Nasi Brasmati, & Kentang";
-    const String menuImg = 'assets/images/plate-biryani-with-bunch-food-it.jpg';
+    const String menuName = "Snack Box #1";
+    const int menuPrice = 14000;
+    const String menuDesc = "Risol Mayo, Cupcake, & Jasuke";
+    const String menuImg = 'assets/images/top-view-chicken-nuggets-with-sauce.jpg'; // Sesuaikan asset lo
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
@@ -54,20 +53,17 @@ class _LunchBox3State extends State<LunchBox3> {
                       Row(
                         children: [
                           _buildQtyBtn(Icons.remove, () { if (_quantity > 1) setState(() => _quantity--); }),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("$_quantity", style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                          ),
+                          Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text("$_quantity", style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
                           _buildQtyBtn(Icons.add, () => setState(() => _quantity++)),
                         ],
                       ),
                       const SizedBox(height: 30),
-                      const Text("Catatan Tambahan (Opsional)", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                      const Text("Catatan Tambahan (Alamat/Jam/Request)", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 10),
                       TextField(
                         controller: _noteController, maxLines: 3, style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: "Contoh: Alamat pengiriman, Jam kirim...",
+                          hintText: "Contoh: Jl. Melati No. 5, Jam 10 pagi, Jasuke dipisah keju...",
                           hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
                           filled: true, fillColor: Colors.white.withOpacity(0.1),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -106,14 +102,7 @@ class _LunchBox3State extends State<LunchBox3> {
   }
 
   Widget _buildQtyBtn(IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(border: Border.all(color: const Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(8)),
-        child: Icon(icon, color: const Color(0xFFBC9C22), size: 20),
-      ),
-    );
+    return GestureDetector(onTap: onTap, child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(border: Border.all(color: const Color(0xFFBC9C22)), borderRadius: BorderRadius.circular(8)), child: Icon(icon, color: const Color(0xFFBC9C22), size: 20)));
   }
 
   void _order(BuildContext context, String name, int price, String desc, String img) async {

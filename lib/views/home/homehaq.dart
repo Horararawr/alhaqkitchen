@@ -1,8 +1,8 @@
-import 'package:alhaqkitchen/views/menu/latestorder.dart';
+import 'package:alhaqkitchen/views/home/latestorder.dart';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/views/cart/carthaq.dart';
 import 'package:alhaqkitchen/views/profile/profilehaq.dart';
-import 'package:alhaqkitchen/views/menu/menuhaq.dart';
+import 'package:alhaqkitchen/views/home/menuhaq.dart';
 
 class HomeHaq extends StatefulWidget {
   final String email;

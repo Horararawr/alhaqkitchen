@@ -1,25 +1,25 @@
 import 'package:alhaqkitchen/views/order/success_order.dart';
 import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/database/app_data.dart';
+import 'package:alhaqkitchen/models/cart_model.dart';
 
-class LunchBox4 extends StatefulWidget {
-  const LunchBox4({super.key});
+class LunchBox3 extends StatefulWidget {
+  const LunchBox3({super.key});
 
   @override
-  State<LunchBox4> createState() => _LunchBox4State();
+  State<LunchBox3> createState() => _LunchBox3State();
 }
 
-class _LunchBox4State extends State<LunchBox4> {
+class _LunchBox3State extends State<LunchBox3> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const String menuName = "Lunch Box #4";
-    const int menuPrice = 20000;
-    const String menuDesc = "Beef Rendang, Nasi Putih, & Telor Bulet";
-    const String menuImg = 'assets/images/Beef-Rendang-Indonesian-Curry-sw.jpg';
+    const String menuName = "Lunch Box #3";
+    const int menuPrice = 25000;
+    const String menuDesc = "Ayam Briyani, Nasi Brasmati, & Kentang";
+    const String menuImg = 'assets/images/plate-biryani-with-bunch-food-it.jpg';
 
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
