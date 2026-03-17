@@ -1,4 +1,4 @@
-package com.example.alhaqkitchen
+package com.ppkd.alhaqconnect
 
 import io.flutter.embedding.android.FlutterActivity
 
