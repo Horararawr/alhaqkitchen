@@ -1,8 +1,6 @@
 import 'package:alhaqkitchen/models/cart_model.dart';
-import 'package:alhaqkitchen/views/lunchbox/lunchbox1.dart';
-import 'package:alhaqkitchen/views/lunchbox/lunchbox2.dart';
-import 'package:alhaqkitchen/views/lunchbox/lunchbox3.dart';
-import 'package:alhaqkitchen/views/lunchbox/lunchbox4.dart';
+import 'package:alhaqkitchen/views/lunchbox/lunchboxmenu.dart';
+import 'package:alhaqkitchen/views/snackbox/snackboxmenu.dart';
 import 'package:flutter/material.dart';
 
 class LatestOrder extends StatefulWidget {
@@ -13,6 +11,21 @@ class LatestOrder extends StatefulWidget {
 }
 
 class _LatestOrderState extends State<LatestOrder> {
+  // Data menu untuk navigasi "Order Again"
+  static const _lunchBoxData = {
+    "#1": {"name": "Lunch Box #1", "price": 20000, "desc": "Ayam Teriyaki, Nasi Putih, & Salad Mayo", "img": "assets/images/teriyaki-chicken-with-rice-fresh-herbs-beige-plate-traditional-japanese-dish-side-view-close-up_166116-4589.jpg"},
+    "#2": {"name": "Lunch Box #2", "price": 25000, "desc": "Beef Teriyaki, Nasi Putih, & Salad Mayo", "img": "assets/images/instant-pot-teriyaki-beef-recipe.webp"},
+    "#3": {"name": "Lunch Box #3", "price": 25000, "desc": "Ayam Briyani, Nasi Brasmati, & Kentang", "img": "assets/images/plate-biryani-with-bunch-food-it.jpg"},
+    "#4": {"name": "Lunch Box #4", "price": 20000, "desc": "Beef Rendang, Nasi Putih, & Telor Bulet", "img": "assets/images/Beef-Rendang-Indonesian-Curry-sw.jpg"},
+  };
+
+  static const _snackBoxData = {
+    "#1": {"name": "Snack Box #1", "price": 14000, "desc": "Risol Mayo, Cupcake, & Jasuke", "img": "assets/images/top-view-chicken-nuggets-with-sauce.jpg"},
+    "#2": {"name": "Snack Box #2", "price": 13000, "desc": "Buras, Sosis Solo, & Kue Sus", "img": "assets/images/unnamed.jpg"},
+    "#3": {"name": "Snack Box #3", "price": 15000, "desc": "Samosa Beef, Onde-onde & Ketan Abon", "img": "assets/images/delicious-pakistani-food-with-tomato-sauce.jpg"},
+    "#4": {"name": "Snack Box #4", "price": 12000, "desc": "Pastel, Kue Lapis, & Pie Susu", "img": "assets/images/tips-membuat-pastel-renyah-dan-m-20231124031803-2291788294.webp"},
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,20 +152,37 @@ class _LatestOrderState extends State<LatestOrder> {
 
   // LOGIK NAVIGASI BALIK KE MENU SPESIFIK
   void _handleOrderAgain(String name) {
-    Widget targetPage;
-    if (name.contains("#1")) {
-      targetPage = const LunchBox1();
-    } else if (name.contains("#2")) {
-      targetPage = const LunchBox2();
-    } else if (name.contains("#3")) {
-      targetPage = const LunchBox3();
-    } else {
-      targetPage = const LunchBox4();
+    Widget? targetPage;
+
+    // Cari nomor menu dari nama
+    for (final key in ["#1", "#2", "#3", "#4"]) {
+      if (name.contains(key)) {
+        if (name.toLowerCase().contains("lunch")) {
+          final data = _lunchBoxData[key]!;
+          targetPage = LunchBoxMenu(
+            menuName: data["name"] as String,
+            menuPrice: data["price"] as int,
+            menuDesc: data["desc"] as String,
+            menuImg: data["img"] as String,
+          );
+        } else if (name.toLowerCase().contains("snack")) {
+          final data = _snackBoxData[key]!;
+          targetPage = SnackBoxMenu(
+            menuName: data["name"] as String,
+            menuPrice: data["price"] as int,
+            menuDesc: data["desc"] as String,
+            menuImg: data["img"] as String,
+          );
+        }
+        break;
+      }
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => targetPage),
-    );
+    if (targetPage != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => targetPage!),
+      );
+    }
   }
 }

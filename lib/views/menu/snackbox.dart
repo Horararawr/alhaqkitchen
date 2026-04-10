@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import '../snackbox/snackbox1.dart'; 
-import '../snackbox/snackbox2.dart';
-import '../snackbox/snackbox3.dart';
-import '../snackbox/snackbox4.dart';
+import '../snackbox/snackboxmenu.dart';
 
 class SnackBox extends StatelessWidget {
   const SnackBox({super.key});
@@ -36,8 +33,12 @@ class SnackBox extends StatelessWidget {
               context,
               "Snack Box #1", 
               "Risol Mayo, Cupcake, & Jasuke", 
-              'assets/images/top-view-chicken-nuggets-with-sauce.jpg', // Ganti kalo ada asset khusus snack
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox1())),
+              'assets/images/top-view-chicken-nuggets-with-sauce.jpg',
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBoxMenu(
+                menuName: "Snack Box #1", menuPrice: 14000,
+                menuDesc: "Risol Mayo, Cupcake, & Jasuke",
+                menuImg: 'assets/images/top-view-chicken-nuggets-with-sauce.jpg',
+              ))),
             ),
             const SizedBox(height: 30),
 
@@ -47,7 +48,11 @@ class SnackBox extends StatelessWidget {
               "Snack Box #2", 
               "Buras, Sosis Solo, & Kue Sus", 
               'assets/images/unnamed.jpg', 
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox2())),
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBoxMenu(
+                menuName: "Snack Box #2", menuPrice: 13000,
+                menuDesc: "Buras, Sosis Solo, & Kue Sus",
+                menuImg: 'assets/images/unnamed.jpg',
+              ))),
             ),
             const SizedBox(height: 30),
 
@@ -57,7 +62,11 @@ class SnackBox extends StatelessWidget {
               "Snack Box #3", 
               "Samosa Beef, Onde-onde & Ketan Abon", 
               'assets/images/delicious-pakistani-food-with-tomato-sauce.jpg', 
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox3())),
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBoxMenu(
+                menuName: "Snack Box #3", menuPrice: 15000,
+                menuDesc: "Samosa Beef, Onde-onde & Ketan Abon",
+                menuImg: 'assets/images/delicious-pakistani-food-with-tomato-sauce.jpg',
+              ))),
             ),
             const SizedBox(height: 30),
 
@@ -67,7 +76,11 @@ class SnackBox extends StatelessWidget {
               "Snack Box #4", 
               "Pastel, Kue Lapis, & Pie Susu", 
               'assets/images/tips-membuat-pastel-renyah-dan-m-20231124031803-2291788294.webp', 
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBox4())),
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SnackBoxMenu(
+                menuName: "Snack Box #4", menuPrice: 12000,
+                menuDesc: "Pastel, Kue Lapis, & Pie Susu",
+                menuImg: 'assets/images/tips-membuat-pastel-renyah-dan-m-20231124031803-2291788294.webp',
+              ))),
             ),
             const SizedBox(height: 40),
           ],

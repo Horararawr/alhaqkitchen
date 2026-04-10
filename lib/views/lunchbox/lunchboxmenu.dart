@@ -3,24 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:alhaqkitchen/database/sqflite.dart';
 import 'package:alhaqkitchen/models/cart_model.dart';
 
-class LunchBox1 extends StatefulWidget {
-  const LunchBox1({super.key});
+class LunchBoxMenu extends StatefulWidget {
+  final String menuName;
+  final int menuPrice;
+  final String menuDesc;
+  final String menuImg;
+
+  const LunchBoxMenu({
+    super.key,
+    required this.menuName,
+    required this.menuPrice,
+    required this.menuDesc,
+    required this.menuImg,
+  });
 
   @override
-  State<LunchBox1> createState() => _LunchBox1State();
+  State<LunchBoxMenu> createState() => _LunchBoxMenuState();
 }
 
-class _LunchBox1State extends State<LunchBox1> {
+class _LunchBoxMenuState extends State<LunchBoxMenu> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    const String menuName = "Lunch Box #1";
-    const int menuPrice = 20000;
-    const String menuDesc = "Ayam Teriyaki, Nasi Putih, & Salad Mayo";
-    const String menuImg = 'assets/images/teriyaki-chicken-with-rice-fresh-herbs-beige-plate-traditional-japanese-dish-side-view-close-up_166116-4589.jpg';
-
     return Scaffold(
       backgroundColor: const Color(0xFF00357A),
       body: Stack(
@@ -32,9 +38,9 @@ class _LunchBox1State extends State<LunchBox1> {
                 expandedHeight: 300,
                 pinned: true,
                 backgroundColor: const Color(0xFF00357A),
-                automaticallyImplyLeading: false, // Matiin back button bawaan
+                automaticallyImplyLeading: false,
                 flexibleSpace: FlexibleSpaceBar(
-                  background: Image.asset(menuImg, fit: BoxFit.cover),
+                  background: Image.asset(widget.menuImg, fit: BoxFit.cover),
                 ),
               ),
               SliverToBoxAdapter(
@@ -47,16 +53,16 @@ class _LunchBox1State extends State<LunchBox1> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(menuName, 
-                            style: TextStyle(color: Color(0xFFBC9C22), fontSize: 32, fontFamily: 'BacasimeAntique', fontWeight: FontWeight.bold)),
-                          Text("Rp $menuPrice", 
+                          Text(widget.menuName,
+                            style: const TextStyle(color: Color(0xFFBC9C22), fontSize: 32, fontFamily: 'BacasimeAntique', fontWeight: FontWeight.bold)),
+                          Text("Rp ${widget.menuPrice}",
                             style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
                         ],
                       ),
                       const SizedBox(height: 10),
-                      const Text(menuDesc, 
-                        style: TextStyle(color: Colors.white70, fontSize: 16)),
-                      
+                      Text(widget.menuDesc,
+                        style: const TextStyle(color: Colors.white70, fontSize: 16)),
+
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 20),
                         child: Divider(color: Colors.white24),
@@ -112,7 +118,7 @@ class _LunchBox1State extends State<LunchBox1> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
-                  color: Color(0xFFBC9C22), // Warna emas request lo
+                  color: Color(0xFFBC9C22),
                   shape: BoxShape.circle,
                   boxShadow: [BoxShadow(color: Colors.black45, blurRadius: 5)],
                 ),
@@ -132,12 +138,12 @@ class _LunchBox1State extends State<LunchBox1> {
         ),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFBC9C22), 
-            minimumSize: const Size(double.infinity, 55), 
+            backgroundColor: const Color(0xFFBC9C22),
+            minimumSize: const Size(double.infinity, 55),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
           ),
-          onPressed: () => _order(context, menuName, menuPrice, menuDesc, menuImg),
-          child: Text("Tambah ke Cart - Rp ${menuPrice * _quantity}", 
+          onPressed: () => _order(context),
+          child: Text("Tambah ke Cart - Rp ${widget.menuPrice * _quantity}",
             style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
         ),
       ),
@@ -158,26 +164,26 @@ class _LunchBox1State extends State<LunchBox1> {
     );
   }
 
-  void _order(BuildContext context, String name, int price, String desc, String img) async {
+  void _order(BuildContext context) async {
     await DBHelper.insertCartItem({
-      'name': name, 
-      'price': price, 
-      'image': img, 
-      'quantity': _quantity, 
-      'status': 'cart', 
+      'name': widget.menuName,
+      'price': widget.menuPrice,
+      'image': widget.menuImg,
+      'quantity': _quantity,
+      'status': 'cart',
       'order_date': DateTime.now().toString(),
-      'notes': _noteController.text 
+      'notes': _noteController.text
     });
-    
+
     globalCart.add(CartItem(
-      name: name, 
-      price: price, 
-      desc: desc, 
-      image: img, 
+      name: widget.menuName,
+      price: widget.menuPrice,
+      desc: widget.menuDesc,
+      image: widget.menuImg,
       qty: _quantity,
       notes: _noteController.text
     ));
-    
+
     if (!mounted) return;
     Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));
   }

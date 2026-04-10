@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import '../lunchbox/lunchbox1.dart'; 
-import '../lunchbox/lunchbox2.dart';
-import '../lunchbox/lunchbox3.dart';
-import '../lunchbox/lunchbox4.dart';
+import '../lunchbox/lunchboxmenu.dart';
 
 class LunchBox extends StatelessWidget {
   const LunchBox({super.key});
@@ -31,43 +28,59 @@ class LunchBox extends StatelessWidget {
             const Divider(color: Color(0xFFBC9C22), thickness: 1), 
             const SizedBox(height: 20),
 
-            // Menu 1 -> Pindah ke LunchBox1
+            // Menu 1
             _itemMenu(
               context,
               "Lunch Box #1", 
               "Ayam Teriyaki, Nasi Putih, & Salad Mayo", 
               'assets/images/teriyaki-chicken-with-rice-fresh-herbs-beige-plate-traditional-japanese-dish-side-view-close-up_166116-4589.jpg',
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox1())),
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBoxMenu(
+                menuName: "Lunch Box #1", menuPrice: 20000,
+                menuDesc: "Ayam Teriyaki, Nasi Putih, & Salad Mayo",
+                menuImg: 'assets/images/teriyaki-chicken-with-rice-fresh-herbs-beige-plate-traditional-japanese-dish-side-view-close-up_166116-4589.jpg',
+              ))),
             ),
             const SizedBox(height: 30),
 
-            // Menu 2 -> Pindah ke LunchBox2
+            // Menu 2
             _itemMenu(
               context,
               "Lunch Box #2", 
               "Beef Teriyaki, Nasi Putih, & Salad Mayo", 
               'assets/images/instant-pot-teriyaki-beef-recipe.webp',
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox2())),
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBoxMenu(
+                menuName: "Lunch Box #2", menuPrice: 25000,
+                menuDesc: "Beef Teriyaki, Nasi Putih, & Salad Mayo",
+                menuImg: 'assets/images/instant-pot-teriyaki-beef-recipe.webp',
+              ))),
             ),
             const SizedBox(height: 30),
 
-            // Menu 3 -> Pindah ke LunchBox3
+            // Menu 3
             _itemMenu(
               context,
               "Lunch Box #3", 
               "Ayam Briyani, Nasi Brasmati, & Kentang", 
               'assets/images/plate-biryani-with-bunch-food-it.jpg',
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox3())),
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBoxMenu(
+                menuName: "Lunch Box #3", menuPrice: 25000,
+                menuDesc: "Ayam Briyani, Nasi Brasmati, & Kentang",
+                menuImg: 'assets/images/plate-biryani-with-bunch-food-it.jpg',
+              ))),
             ),
             const SizedBox(height: 30),
 
-            // Menu 4 -> Pindah ke LunchBox4
+            // Menu 4
             _itemMenu(
               context,
               "Lunch Box #4", 
               "Beef Rendang, Nasi Putih, & Telor Bulet", 
               'assets/images/Beef-Rendang-Indonesian-Curry-sw.jpg',
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBox4())),
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LunchBoxMenu(
+                menuName: "Lunch Box #4", menuPrice: 20000,
+                menuDesc: "Beef Rendang, Nasi Putih, & Telor Bulet",
+                menuImg: 'assets/images/Beef-Rendang-Indonesian-Curry-sw.jpg',
+              ))),
             ),
             const SizedBox(height: 40),
           ],
