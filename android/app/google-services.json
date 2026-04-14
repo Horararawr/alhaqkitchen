@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "118641737770",
+    "project_id": "al-haq-connect-1c4c7",
+    "storage_bucket": "al-haq-connect-1c4c7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:118641737770:android:3c49941887208f8d408353",
+        "android_client_info": {
+          "package_name": "com.ppkd.alhaqconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM8A4dFUNwJxYa9s6nr267Oyh6N4GMerQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

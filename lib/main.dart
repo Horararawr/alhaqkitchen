@@ -1,8 +1,12 @@
-import 'package:alhaqkitchen/views/home/homehaq.dart'; 
+import 'package:alhaqkitchen/views/home/homehaq.dart';
 import 'package:alhaqkitchen/views/splash/splashscreenhaq.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:alhaqkitchen/firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -15,13 +19,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Al-Haq Connect',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00357A)), 
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00357A)),
         useMaterial3: true,
       ),
-      home: const SplashHaq(), 
+      home: const SplashHaq(),
       routes: {
         // FIX: Tambahin parameter name biar gak merah
-        '/home': (context) => const HomeHaq(email: '', name: ''), 
+        '/home': (context) => const HomeHaq(email: '', name: ''),
       },
     );
   }
