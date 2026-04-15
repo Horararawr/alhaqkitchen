@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:alhaqkitchen/database/sqflite.dart';
+import 'package:alhaqkitchen/database/firebase_service.dart';
 import 'package:alhaqkitchen/views/login/loginhaq.dart';
 import 'package:alhaqkitchen/views/profile/settingshaq.dart';
 
@@ -25,10 +24,10 @@ class _ProfileHaqState extends State<ProfileHaq> {
   }
 
   Future<void> _loadUserData() async {
-    final data = await DBHelper.getProfile(widget.userEmail);
+    final data = await FirebaseService.getProfile();
     if (data != null && mounted) {
       setState(() {
-        _userName = data['nama'] ?? widget.userName;
+        _userName = data['name'] ?? widget.userName;
         _imagePath = data['foto'];
       });
     }
@@ -51,9 +50,9 @@ class _ProfileHaqState extends State<ProfileHaq> {
             children: [
               CircleAvatar(
                 radius: 50, backgroundColor: Colors.grey,
-                backgroundImage: (_imagePath != null && _imagePath!.isNotEmpty && File(_imagePath!).existsSync())
-                    ? FileImage(File(_imagePath!)) : null,
-                child: (_imagePath == null || _imagePath!.isEmpty || !File(_imagePath!).existsSync())
+                backgroundImage: (_imagePath != null && _imagePath!.isNotEmpty)
+                    ? NetworkImage(_imagePath!) as ImageProvider : null,
+                child: (_imagePath == null || _imagePath!.isEmpty)
                     ? const Icon(Icons.person, size: 60, color: Colors.white) : null,
               ),
               const SizedBox(height: 15),
@@ -75,8 +74,11 @@ class _ProfileHaqState extends State<ProfileHaq> {
               }),
               
               const SizedBox(height: 10),
-              _btn("Logout", const Color(0xFFBA1212), () => 
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginHaq()), (r) => false)),
+              _btn("Logout", const Color(0xFFBA1212), () async {
+                await FirebaseService.logoutUser();
+                if (!mounted) return;
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginHaq()), (r) => false);
+              }),
             ],
           ),
         ),

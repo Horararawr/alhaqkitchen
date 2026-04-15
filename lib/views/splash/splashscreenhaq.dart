@@ -1,3 +1,6 @@
+import 'package:alhaqkitchen/database/firebase_service.dart';
+import 'package:alhaqkitchen/views/home/homehaq.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../login/loginhaq.dart';
 
@@ -12,14 +15,33 @@ class _SplashHaqState extends State<SplashHaq> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginHaq()),
-        );
-      }
-    });
+    _checkLogin();
+  }
+
+  Future<void> _checkLogin() async {
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Load profile to get name
+      final profile = await FirebaseService.getProfile();
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeHaq(
+            email: user.email ?? "",
+            name: profile?['name'] ?? "User Al-Haq",
+          ),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginHaq()),
+      );
+    }
   }
 
   @override

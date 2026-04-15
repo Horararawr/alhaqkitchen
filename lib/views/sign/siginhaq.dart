@@ -1,5 +1,4 @@
-import 'package:alhaqkitchen/database/sqflite.dart';
-import 'package:alhaqkitchen/models/user_model.dart';
+import 'package:alhaqkitchen/database/firebase_service.dart';
 import 'package:alhaqkitchen/views/home/homehaq.dart'; // Pastiin path ini bener
 import 'package:flutter/material.dart';
 
@@ -104,12 +103,18 @@ class _RegisterHaqState extends State<RegisterHaq> {
                       style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBC9C22), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          await DBHelper.registerUser(UserModel(
-                            name: _nameController.text, // Pake 'name' sesuai model
-                            email: _emailController.text,
-                            password: _passController.text,
-                          ));
-                          _showSuccessAlert(_emailController.text, _nameController.text);
+                          try {
+                            await FirebaseService.registerUser(
+                              email: _emailController.text,
+                              password: _passController.text,
+                              username: _nameController.text,
+                            );
+                            _showSuccessAlert(_emailController.text, _nameController.text);
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Email udah terdaftar atau error lain: $e"))
+                            );
+                          }
                         }
                       },
                       child: const Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),

@@ -1,4 +1,5 @@
 import 'package:alhaqkitchen/models/cart_model.dart';
+import 'package:alhaqkitchen/database/firebase_service.dart';
 import 'package:alhaqkitchen/views/lunchbox/lunchboxmenu.dart';
 import 'package:alhaqkitchen/views/snackbox/snackboxmenu.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,29 @@ class LatestOrder extends StatefulWidget {
 }
 
 class _LatestOrderState extends State<LatestOrder> {
+  List<CartItem> _historyItems = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    setState(() => _isLoading = true);
+    try {
+      final items = await FirebaseService.getOrders();
+      setState(() {
+        _historyItems = items;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("Error loading history: $e");
+      setState(() => _isLoading = false);
+    }
+  }
+
   // Data menu untuk navigasi "Order Again"
   static const _lunchBoxData = {
     "#1": {"name": "Lunch Box #1", "price": 20000, "desc": "Ayam Teriyaki, Nasi Putih, & Salad Mayo", "img": "assets/images/teriyaki-chicken-with-rice-fresh-herbs-beige-plate-traditional-japanese-dish-side-view-close-up_166116-4589.jpg"},
@@ -46,115 +70,106 @@ class _LatestOrderState extends State<LatestOrder> {
           ),
         ),
         centerTitle: true,
-        // --- STRIPE DIVIDER DI BAWAH TULISAN LATEST ORDER ---
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(10),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20), // Jarak kanan kiri garis
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
-              height: 1.5, // Ketebalan garis
+              height: 1.5,
               decoration: BoxDecoration(
                 color: const Color(0xFFBC9C22),
                 borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFBC9C22).withOpacity(0.1),
-                    blurRadius: 1,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
             ),
           ),
         ),
       ),
-      body: globalHistory.isEmpty
-          ? const Center(
-              child: Text(
-                "No history yet",
-                style: TextStyle(color: Colors.white70, fontSize: 16),
+      body: _isLoading 
+        ? const Center(child: CircularProgressIndicator(color: Color(0xFFBC9C22)))
+        : _historyItems.isEmpty
+            ? const Center(
+                child: Text(
+                  "No history yet",
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+                itemCount: _historyItems.length,
+                itemBuilder: (context, index) {
+                  final item = _historyItems[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      border: Border.all(color: const Color(0xFFBC9C22).withOpacity(0.5)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item.name,
+                              style: const TextStyle(
+                                color: Color(0xFFBC9C22),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              item.date ?? "",
+                              style: const TextStyle(color: Colors.white54, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          item.desc,
+                          style: const TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          "Qty: ${item.qty}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Divider(color: Colors.white24, height: 25),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFBC9C22),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 3,
+                            ),
+                            onPressed: () => _handleOrderAgain(item.name),
+                            child: const Text(
+                              "Order Again?",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-              itemCount: globalHistory.length,
-              itemBuilder: (context, index) {
-                final item = globalHistory[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
-                    border: Border.all(color: const Color(0xFFBC9C22).withOpacity(0.5)),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            item.name,
-                            style: const TextStyle(
-                              color: Color(0xFFBC9C22),
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            item.date ?? "",
-                            style: const TextStyle(color: Colors.white54, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        item.desc,
-                        style: const TextStyle(color: Colors.white70, fontSize: 14),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        "Qty: ${item.qty}",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Divider(color: Colors.white24, height: 25),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFBC9C22),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 3,
-                          ),
-                          onPressed: () => _handleOrderAgain(item.name),
-                          child: const Text(
-                            "Order Again?",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
     );
   }
 
-  // LOGIK NAVIGASI BALIK KE MENU SPESIFIK
   void _handleOrderAgain(String name) {
     Widget? targetPage;
-
-    // Cari nomor menu dari nama
     for (final key in ["#1", "#2", "#3", "#4"]) {
       if (name.contains(key)) {
         if (name.toLowerCase().contains("lunch")) {
@@ -177,12 +192,8 @@ class _LatestOrderState extends State<LatestOrder> {
         break;
       }
     }
-
     if (targetPage != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => targetPage!),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => targetPage!));
     }
   }
 }

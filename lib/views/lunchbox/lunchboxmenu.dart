@@ -1,6 +1,6 @@
 import 'package:alhaqkitchen/views/order/success_order.dart';
 import 'package:flutter/material.dart';
-import 'package:alhaqkitchen/database/sqflite.dart';
+import 'package:alhaqkitchen/database/firebase_service.dart';
 import 'package:alhaqkitchen/models/cart_model.dart';
 
 class LunchBoxMenu extends StatefulWidget {
@@ -165,24 +165,17 @@ class _LunchBoxMenuState extends State<LunchBoxMenu> {
   }
 
   void _order(BuildContext context) async {
-    await DBHelper.insertCartItem({
-      'name': widget.menuName,
-      'price': widget.menuPrice,
-      'image': widget.menuImg,
-      'quantity': _quantity,
-      'status': 'cart',
-      'order_date': DateTime.now().toString(),
-      'notes': _noteController.text
-    });
-
-    globalCart.add(CartItem(
+    final item = CartItem(
       name: widget.menuName,
       price: widget.menuPrice,
       desc: widget.menuDesc,
       image: widget.menuImg,
       qty: _quantity,
-      notes: _noteController.text
-    ));
+      notes: _noteController.text,
+      date: DateTime.now().toString().substring(0, 16),
+    );
+
+    await FirebaseService.addToCart(item);
 
     if (!mounted) return;
     Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:alhaqkitchen/database/sqflite.dart';
+import 'package:alhaqkitchen/database/firebase_service.dart';
 
 class SettingsHaq extends StatefulWidget {
   final String email;
@@ -26,18 +26,22 @@ class _SettingsHaqState extends State<SettingsHaq> {
   }
 
   Future<void> _loadPhoto() async {
-    final data = await DBHelper.getProfile(widget.email);
+    final data = await FirebaseService.getProfile();
     if (data != null && data['foto'] != null && data['foto'].isNotEmpty) {
-      final file = File(data['foto']);
-      if (file.existsSync()) {
-        setState(() => _image = file);
-      }
+      setState(() {
+        _photoUrl = data['foto'];
+      });
     }
   }
 
+  String? _photoUrl;
+
   Future<void> _pickImage() async {
     final XFile? file = await _picker.pickImage(source: ImageSource.gallery);
-    if (file != null) setState(() => _image = File(file.path));
+    if (file != null) setState(() {
+      _image = File(file.path);
+      _photoUrl = null; // Clear URL if local image is picked
+    });
   }
 
   @override
@@ -62,8 +66,10 @@ class _SettingsHaqState extends State<SettingsHaq> {
                   CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.grey[400],
-                    backgroundImage: _image != null ? FileImage(_image!) : null,
-                    child: _image == null ? const Icon(Icons.camera_alt, size: 40, color: Colors.white) : null,
+                    backgroundImage: _image != null 
+                        ? FileImage(_image!) 
+                        : (_photoUrl != null ? NetworkImage(_photoUrl!) as ImageProvider : null),
+                    child: (_image == null && _photoUrl == null) ? const Icon(Icons.camera_alt, size: 40, color: Colors.white) : null,
                   ),
                   Positioned(
                     bottom: 0, right: 5,
@@ -99,14 +105,13 @@ class _SettingsHaqState extends State<SettingsHaq> {
                   setState(() => _isLoading = true);
                   
                   try {
-                    // Update Database
-                    await DBHelper.saveProfile(
-                      widget.email, 
-                      _nameController.text.trim(), 
-                      _image?.path ?? "", 
-                      "", // noHp
-                      ""  // alamat
-                    );
+                    // Update Database - Name
+                    await FirebaseService.updateProfileName(_nameController.text.trim());
+
+                    // Update photo if changed
+                    if (_image != null) {
+                      await FirebaseService.updateProfilePhoto(_image!);
+                    }
 
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(

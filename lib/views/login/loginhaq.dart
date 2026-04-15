@@ -1,4 +1,4 @@
-import 'package:alhaqkitchen/database/sqflite.dart';
+import 'package:alhaqkitchen/database/firebase_service.dart';
 import 'package:alhaqkitchen/views/sign/siginhaq.dart';
 import 'package:alhaqkitchen/views/home/homehaq.dart'; 
 import 'package:flutter/material.dart';
@@ -76,7 +76,7 @@ class _LoginHaqState extends State<LoginHaq> {
       setState(() => _isLoading = true);
       
       try {
-        final user = await DBHelper.loginUser(
+        final user = await FirebaseService.loginUser(
           email: _emailController.text, 
           password: _passController.text
         );
@@ -99,6 +99,10 @@ class _LoginHaqState extends State<LoginHaq> {
         }
       } catch (e) {
         print("Login Error: $e");
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${e.toString()}"))
+        );
       } finally {
         if (mounted) setState(() => _isLoading = false);
       }

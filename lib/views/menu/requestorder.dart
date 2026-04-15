@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:alhaqkitchen/database/sqflite.dart'; // Pastiin path ini bener
+import 'package:alhaqkitchen/database/firebase_service.dart';
 
 class RequestOrder extends StatefulWidget {
   const RequestOrder({super.key});
@@ -19,11 +19,10 @@ class _RequestOrderState extends State<RequestOrder> {
     _refreshData();
   }
 
-  // READ: Ambil data dari database
   void _refreshData() async {
     setState(() => _isLoading = true);
     try {
-      final data = await DBHelper.getData('request_orders');
+      final data = await FirebaseService.getRequestOrders();
       setState(() {
         _requests = data;
         _isLoading = false;
@@ -34,8 +33,7 @@ class _RequestOrderState extends State<RequestOrder> {
     }
   }
 
-  // --- FUNGSI BARU: ALERT KONFIRMASI HAPUS ---
-  void _confirmDelete(int id) {
+  void _confirmDelete(String id) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -56,7 +54,7 @@ class _RequestOrderState extends State<RequestOrder> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
             onPressed: () {
               _deleteRequest(id);
-              Navigator.pop(context); // Tutup Dialog
+              Navigator.pop(context);
             },
             child: const Text("HAPUS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
@@ -65,8 +63,7 @@ class _RequestOrderState extends State<RequestOrder> {
     );
   }
 
-  // CREATE & UPDATE: Tampilkan Dialog
-  void _showForm(int? id, String? currentText) {
+  void _showForm(String? id, String? currentText) {
     if (id != null) {
       _controller.text = currentText!;
     } else {
@@ -114,15 +111,15 @@ class _RequestOrderState extends State<RequestOrder> {
               if (input.isNotEmpty) {
                 try {
                   if (id == null) {
-                    await DBHelper.insert('request_orders', {'content': input});
+                    await FirebaseService.addRequestOrder(input);
                   } else {
-                    await DBHelper.update('request_orders', id, {'content': input});
+                    await FirebaseService.updateRequestOrder(id, input);
                   }
                   _controller.clear();
                   Navigator.pop(context); 
                   _refreshData(); 
                 } catch (e) {
-                  print("Gagal Simpan ke DB: $e");
+                  print("Gagal Simpan ke Firebase: $e");
                 }
               }
             },
@@ -135,9 +132,8 @@ class _RequestOrderState extends State<RequestOrder> {
     );
   }
 
-  // DELETE
-  void _deleteRequest(int id) async {
-    await DBHelper.delete('request_orders', id);
+  void _deleteRequest(String id) async {
+    await FirebaseService.deleteRequestOrder(id);
     _refreshData();
   }
 
@@ -216,7 +212,7 @@ class _RequestOrderState extends State<RequestOrder> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete_sweep_rounded, color: Colors.redAccent, size: 28),
-                              onPressed: () => _confirmDelete(item['id']), // Panggil Alert Dialog
+                              onPressed: () => _confirmDelete(item['id']),
                             ),
                           ],
                         ),
