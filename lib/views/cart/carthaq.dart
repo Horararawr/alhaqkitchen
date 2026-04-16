@@ -215,7 +215,11 @@ class _CartHaqState extends State<CartHaq> {
                 await FirebaseService.deleteCartItem(_cartItems[index].id);
                 await _refreshCart();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Pesanan dihapus"), duration: Duration(seconds: 1))
+                  const SnackBar(
+                    content: Text("Pesanan dihapus"), 
+                    backgroundColor: Color(0xFFBC9C22),
+                    duration: Duration(seconds: 1)
+                  )
                 );
               } catch (e) {
                 print("Delete error: $e");

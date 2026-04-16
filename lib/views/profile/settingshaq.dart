@@ -120,7 +120,10 @@ class _SettingsHaqState extends State<SettingsHaq> {
 
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Profil berhasil diperbarui di Firebase!"))
+                        const SnackBar(
+                          content: Text("Profil berhasil diperbarui!"),
+                          backgroundColor: Color(0xFFBC9C22),
+                        )
                       );
                       // Back with 'true' to trigger refresh in ProfileHaq
                       Navigator.pop(context, true);

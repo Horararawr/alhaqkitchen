@@ -112,7 +112,10 @@ class _RegisterHaqState extends State<RegisterHaq> {
                             _showSuccessAlert(_emailController.text, _nameController.text);
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Email udah terdaftar atau error lain: $e"))
+                              const SnackBar(
+                                content: Text("Email udah terdaftar atau error lain"),
+                                backgroundColor: Color(0xFFBC9C22),
+                              )
                             );
                           }
                         }

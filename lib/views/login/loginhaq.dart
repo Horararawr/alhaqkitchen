@@ -94,14 +94,20 @@ class _LoginHaqState extends State<LoginHaq> {
         } else {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Email atau Password Salah!"))
+            const SnackBar(
+              content: Text("Email atau Password Salah!"),
+              backgroundColor: Color(0xFFBC9C22),
+            )
           );
         }
       } catch (e) {
         print("Login Error: $e");
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: ${e.toString()}"))
+          SnackBar(
+            content: Text("Error: ${e.toString()}"),
+            backgroundColor: const Color(0xFFBC9C22),
+          )
         );
       } finally {
         if (mounted) setState(() => _isLoading = false);
