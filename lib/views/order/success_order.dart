@@ -1,3 +1,6 @@
+import 'package:alhaqkitchen/database/firebase_service.dart';
+import 'package:alhaqkitchen/views/home/homehaq.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SuccessOrder extends StatefulWidget {
@@ -12,9 +15,21 @@ class _SuccessOrderState extends State<SuccessOrder> {
   void initState() {
     super.initState();
     // Setelah 3 detik, balik ke Home dan hapus semua history page sebelumnya
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () async {
       if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        final user = FirebaseAuth.instance.currentUser;
+        final profile = await FirebaseService.getProfile();
+        
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context, 
+            MaterialPageRoute(builder: (context) => HomeHaq(
+              email: user?.email ?? "", 
+              name: profile?['name'] ?? "User Al-Haq"
+            )), 
+            (route) => false
+          );
+        }
       }
     });
   }

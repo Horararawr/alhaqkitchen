@@ -14,12 +14,14 @@ class ProfileHaq extends StatefulWidget {
 
 class _ProfileHaqState extends State<ProfileHaq> {
   late String _userName;
+  String? _userEmail;
   String? _imagePath;
 
   @override
   void initState() {
     super.initState();
     _userName = widget.userName;
+    _userEmail = widget.userEmail;
     _loadUserData();
   }
 
@@ -28,6 +30,7 @@ class _ProfileHaqState extends State<ProfileHaq> {
     if (data != null && mounted) {
       setState(() {
         _userName = data['name'] ?? widget.userName;
+        _userEmail = data['email'] ?? widget.userEmail;
         _imagePath = data['foto'];
       });
     }
@@ -61,7 +64,7 @@ class _ProfileHaqState extends State<ProfileHaq> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontFamily: 'BacasimeAntique', color: Colors.white, fontSize: 24)),
               // EMAIL USER (DIBAWAH NAMA)
-              Text(widget.userEmail, style: const TextStyle(color: Colors.white70, fontSize: 14)),
+              Text(_userEmail ?? widget.userEmail, style: const TextStyle(color: Colors.white70, fontSize: 14)),
               
               const Divider(color: Color(0xFFBC9C22), thickness: 1, height: 30),
               
