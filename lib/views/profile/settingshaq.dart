@@ -79,6 +79,18 @@ class _SettingsHaqState extends State<SettingsHaq> {
                       child: const Icon(Icons.edit, size: 20, color: Colors.white),
                     ),
                   ),
+                  if (_photoUrl != null && _photoUrl!.isNotEmpty || _image != null)
+                    Positioned(
+                      bottom: 0, left: 5,
+                      child: GestureDetector(
+                        onTap: _showDeleteConfirm,
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(color: Colors.redAccent, shape: BoxShape.circle),
+                          child: const Icon(Icons.delete, size: 20, color: Colors.white),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -148,4 +160,58 @@ class _SettingsHaqState extends State<SettingsHaq> {
       ),
     );
   }
-}
+
+  void _showDeleteConfirm() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF00357A),
+        shape: RoundedRectangleBorder(
+            side: const BorderSide(color: Color(0xFFBC9C22)),
+            borderRadius: BorderRadius.circular(15)),
+        title: const Text("Hapus Foto?",
+            style: TextStyle(
+                color: Color(0xFFBC9C22), fontWeight: FontWeight.bold)),
+        content: const Text("Yakin mau hapus foto profil kamu?",
+            style: TextStyle(color: Colors.white70)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("BATAL", style: TextStyle(color: Colors.white70)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: () async {
+              Navigator.pop(context);
+              setState(() => _isLoading = true);
+              try {
+                await FirebaseService.deleteProfilePhoto();
+                setState(() {
+                  _photoUrl = null;
+                  _image = null;
+                });
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Foto profil dihapus"),
+                      backgroundColor: Color(0xFFBC9C22)));
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Gagal hapus: $e"),
+                      backgroundColor: Colors.red));
+                }
+              } finally {
+                if (mounted) setState(() => _isLoading = false);
+              }
+            },
+            child: const Text("HAPUS",
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

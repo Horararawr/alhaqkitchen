@@ -113,6 +113,13 @@ class FirebaseService {
     }
   }
 
+  static Future<void> deleteProfilePhoto() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid != null) {
+      await _firestore.collection('users').doc(uid).update({'foto': ''});
+    }
+  }
+
   // --- CART & ORDER ---
   static Future<void> addToCart(CartItem item) async {
     final uid = _auth.currentUser?.uid;
