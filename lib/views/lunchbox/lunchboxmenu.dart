@@ -165,6 +165,7 @@ class _LunchBoxMenuState extends State<LunchBoxMenu> {
   }
 
   void _order(BuildContext context) async {
+    // Show loading if needed, but here we just go
     final item = CartItem(
       name: widget.menuName,
       price: widget.menuPrice,
@@ -175,9 +176,27 @@ class _LunchBoxMenuState extends State<LunchBoxMenu> {
       date: DateTime.now().toString().substring(0, 16),
     );
 
-    await FirebaseService.addToCart(item);
+    try {
+      await FirebaseService.addToCart(item);
 
-    if (!mounted) return;
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));
+      if (!mounted) return;
+      
+      // Kasih feedback visual biar user tau datanya "masuk"
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("${widget.menuName} berhasil ditambah ke Cart!"),
+          backgroundColor: const Color(0xFFBC9C22),
+          duration: const Duration(seconds: 2),
+        )
+      );
+
+      // Pindah ke Success Order (atau bisa juga stay di sini, tapi di code asal pindah)
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal tambah ke Cart: $e"), backgroundColor: Colors.red)
+      );
+    }
   }
 }

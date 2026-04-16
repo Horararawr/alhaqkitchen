@@ -169,9 +169,25 @@ class _SnackBoxMenuState extends State<SnackBoxMenu> {
       date: DateTime.now().toString().substring(0, 16),
     );
 
-    await FirebaseService.addToCart(item);
+    try {
+      await FirebaseService.addToCart(item);
+      if (!mounted) return;
 
-    if (!mounted) return;
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));
+      // Feedback visual
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("${widget.menuName} berhasil ditambah ke Cart!"),
+          backgroundColor: const Color(0xFFBC9C22),
+          duration: const Duration(seconds: 2),
+        )
+      );
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SuccessOrder()));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal tambah ke Cart: $e"), backgroundColor: Colors.red)
+      );
+    }
   }
 }

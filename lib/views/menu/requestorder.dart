@@ -112,14 +112,17 @@ class _RequestOrderState extends State<RequestOrder> {
                 try {
                   if (id == null) {
                     await FirebaseService.addRequestOrder(input);
+                    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Request berhasil dikirim!")));
                   } else {
                     await FirebaseService.updateRequestOrder(id, input);
+                    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Request berhasil diubah!")));
                   }
                   _controller.clear();
-                  Navigator.pop(context); 
+                  if (mounted) Navigator.pop(context); 
                   _refreshData(); 
                 } catch (e) {
                   print("Gagal Simpan ke Firebase: $e");
+                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal Simpan: $e"), backgroundColor: Colors.red));
                 }
               }
             },

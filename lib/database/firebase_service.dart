@@ -24,16 +24,16 @@ class FirebaseService {
       );
       final user = cred.user;
       if (user != null) {
-        final model = UserModel(email: email, password: password, name: username);
-        // Buat doc auth users
+        final model = UserModel(
+          email: email, 
+          password: password, 
+          name: username,
+          foto: '',
+          alamat: '-',
+          noHp: '-',
+        );
+        // Create user document with all fields
         await _firestore.collection('users').doc(user.uid).set(model.toMap());
-        
-        // Buat detail profil
-        await _firestore.collection('users').doc(user.uid).update({
-          'foto': '',
-          'noHp': '-',
-          'alamat': '-',
-        });
         return model;
       }
     } on FirebaseAuthException catch (e) {
@@ -58,12 +58,16 @@ class FirebaseService {
       if (cred.user != null) {
         final doc = await _firestore.collection('users').doc(cred.user!.uid).get();
         if (doc.exists) {
-           return UserModel.fromMap(doc.data()!);
+          // Always return full model from Firestore
+          return UserModel.fromMap(doc.data()!);
+        } else {
+          // Handle case where doc is missing - could happen in dev
+          return UserModel(email: email, password: password, name: "User Al-Haq");
         }
       }
     } on FirebaseAuthException catch (e) {
       print("Login FirebaseAuthException: ${e.message}");
-      rethrow; // Rethrow to handle wrong password or user not found
+      rethrow;
     } catch (e) {
       print("Login Error: $e");
       rethrow;

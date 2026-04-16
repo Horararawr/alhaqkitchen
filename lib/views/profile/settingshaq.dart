@@ -68,8 +68,8 @@ class _SettingsHaqState extends State<SettingsHaq> {
                     backgroundColor: Colors.grey[400],
                     backgroundImage: _image != null 
                         ? FileImage(_image!) 
-                        : (_photoUrl != null ? NetworkImage(_photoUrl!) as ImageProvider : null),
-                    child: (_image == null && _photoUrl == null) ? const Icon(Icons.camera_alt, size: 40, color: Colors.white) : null,
+                        : (_photoUrl != null && _photoUrl!.isNotEmpty ? NetworkImage(_photoUrl!) as ImageProvider : null),
+                    child: (_image == null && (_photoUrl == null || _photoUrl!.isEmpty)) ? const Icon(Icons.camera_alt, size: 40, color: Colors.white) : null,
                   ),
                   Positioned(
                     bottom: 0, right: 5,
@@ -102,28 +102,33 @@ class _SettingsHaqState extends State<SettingsHaq> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
                 ),
                 onPressed: _isLoading ? null : () async {
+                  if (_nameController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Nama tidak boleh kosong!")));
+                    return;
+                  }
+                  
                   setState(() => _isLoading = true);
                   
                   try {
-                    // Update Database - Name
+                    // 1. Update Profile Name
                     await FirebaseService.updateProfileName(_nameController.text.trim());
 
-                    // Update photo if changed
+                    // 2. Update Image if selected
                     if (_image != null) {
                       await FirebaseService.updateProfilePhoto(_image!);
                     }
 
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Changes Saved!"))
+                        const SnackBar(content: Text("Profil berhasil diperbarui di Firebase!"))
                       );
-                      // Navigator.pop ngirim 'true' biar ProfileHaq refresh
+                      // Back with 'true' to trigger refresh in ProfileHaq
                       Navigator.pop(context, true);
                     }
                   } catch (e) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Error: $e"))
+                        SnackBar(content: Text("Gagal Simpan: $e"), backgroundColor: Colors.red)
                       );
                     }
                   } finally {
@@ -131,8 +136,8 @@ class _SettingsHaqState extends State<SettingsHaq> {
                   }
                 },
                 child: _isLoading 
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("SAVE CHANGES", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  : const Text("SIMPAN PERUBAHAN", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
           ],
@@ -140,4 +145,4 @@ class _SettingsHaqState extends State<SettingsHaq> {
       ),
     );
   }
-}
+}
